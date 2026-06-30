@@ -1,5 +1,5 @@
 /************************************************************
- * NUMO CUSTOMER WEBSITE - DIRECT ADMIN NEOSTYLE V2
+ * EIZLIYA STREAM HUB - DIRECT ADMIN RED BLACK V3
  * Uses existing Website Control API for stock, promo, hot selling.
  * Customer order goes direct to admin with prefilled Telegram message, no round robin reseller.
  ************************************************************/
@@ -21,7 +21,7 @@ const PRODUCTS = [
     display: "Netflix Premium",
     image: "netflix.jpg",
     category: "Streaming",
-    desc: "Private profile dan warranty penuh sepanjang langganan.",
+    desc: "Private profile dan warranty penuh.",
     plans: [
       { duration: "1 Bulan", price: "RM25" },
       { duration: "2 Bulan", price: "RM50" },
@@ -62,7 +62,7 @@ const PRODUCTS = [
     display: "Disney+ Hotstar",
     image: "disney.jpg",
     category: "Streaming",
-    desc: "Premium entertainment dengan warranty penuh sepanjang langganan.",
+    desc: "Premium entertainment dengan warranty.",
     plans: [
       { duration: "1 Bulan", price: "RM25" },
       { duration: "2 Bulan", price: "RM45" },
@@ -243,7 +243,15 @@ function applyConfigText() {
 function setHeroTitle(title) {
   if (!$("heroTitle")) return;
   const clean = safe(title || "Akaun Premium Strim Direct Numo");
-  const updated = clean.replace(/Direct Numo/i, '<span class="grad">Direct Numo</span>');
+  let updated = clean;
+  const highlights = ["Streaming Premium", "Direct Numo", "Premium"];
+  for (const h of highlights) {
+    const re = new RegExp(h, "i");
+    if (re.test(updated)) {
+      updated = updated.replace(re, match => `<span class="grad">${match}</span>`);
+      break;
+    }
+  }
   $("heroTitle").innerHTML = updated;
 }
 
@@ -575,7 +583,7 @@ function makeLocalLead(order) {
     price: order.price,
     status: "DIRECT_ADMIN_LOCAL",
     reseller: {
-      name: "Admin NUMO",
+      name: getBrandName(),
       telegramUsername: getAdminUsername()
     },
     telegramUsername: getAdminUsername(),
@@ -626,8 +634,9 @@ function closeModal() {
 }
 
 function buildOrderMessage(lead) {
+  const brand = getBrandName();
   return [
-    "Hi Numo, saya nak order.",
+    `Hi ${brand}, saya nak order.`,
     "",
     `Produk: ${lead.productText}`,
     `Pakej: ${lead.planText}`,
@@ -825,6 +834,9 @@ function jsonp(params) {
     s.src = apiUrl + "?" + new URLSearchParams({ ...params, callback: cb });
     document.body.appendChild(s);
   });
+}
+function getBrandName() {
+  return String(CONFIG.TEXT?.navBrand || "Numo").trim();
 }
 function getAdminUsername() {
   return String(CONFIG.ADMIN_TELEGRAM_USERNAME || "ownernumoventures").replace(/^@/, "").trim();
