@@ -21,7 +21,7 @@ const PRODUCTS = [
     display: "Netflix Premium",
     image: "netflix.jpg",
     category: "Streaming",
-    desc: "Private profile dan warranty penuh.",
+    desc: "Private profile dan warranty penuh sepanjang langganan.",
     plans: [
       { duration: "1 Bulan", price: "RM25" },
       { duration: "2 Bulan", price: "RM50" },
@@ -62,7 +62,7 @@ const PRODUCTS = [
     display: "Disney+ Hotstar",
     image: "disney.jpg",
     category: "Streaming",
-    desc: "Premium entertainment dengan warranty.",
+    desc: "Premium entertainment dengan warranty penuh sepanjang langganan.",
     plans: [
       { duration: "1 Bulan", price: "RM25" },
       { duration: "2 Bulan", price: "RM45" },
