@@ -5,29 +5,29 @@ window.NUMO_DIRECT_CONFIG = {
   SOURCE: "DIRECT_ADMIN_WEBSITE",
 
   TEXT: {
-    navBrand: "Numo Ventures",
-    navTagline: "JANJI TAK SIDAI",
-    heroBadge: "Direct Admin • Fast Response",
-    heroTitle: "Akaun Premium Strim Direct Numo",
-    heroText: "Pilih platform kegemaran anda, semak pakej dan terus PM admin Numo. Tiada round robin reseller untuk website ini.",
+    navBrand: "EL Stream Hub",
+    navTagline: "Anda puashati,kami happy",
+    heroBadge: "Fast Response • Satisfied Guaranteed",
+    heroTitle: "Akaun Streaming Premium",
+    heroText: "Pilih platform streaming kegemaran anda, semak pakej dan terus PM.",
     heroPrimary: "Lihat Pakej",
     heroSecondary: "Pakej Bundle",
     hotEyebrow: "Hot Selling",
-    hotTitle: "Pilihan Paling Hot",
-    hotDesc: "Promo aktif dari sistem Numo akan keluar di sini.",
-    productEyebrow: "Pilihan Platform Kami",
-    productTitle: "Akaun Premium Pilihan",
-    productDesc: "Tekan produk untuk lihat harga. Bila customer order, terus PM admin Numo.",
+    hotTitle: "Pilihan paling berbaloi",
+    hotDesc: "3 pilihan paling berbaloi, hanya untuk anda",
+    productEyebrow: "Akaun streaming premium kami",
+    productTitle: "Senarai Akaun Premium",
+    productDesc: "Tekan produk untuk lihat harga.",
     bundleEyebrow: "Jimat Lebih Banyak",
-    bundleTitle: "Pakej Bundle Numo",
-    bundleDesc: "Bundle ni direct PM admin. Admin akan confirm stock dan harga semasa.",
-    trustEyebrow: "Kenapa Numo",
-    trustTitle: "Simple, Pantas, Berwaranti",
-    trustDesc: "Customer terus berhubung dengan admin untuk order, payment dan support.",
+    bundleTitle: "Pakej Bundle",
+    bundleDesc: "Pilih pakej bundle kegemaran anda",
+    trustEyebrow: "Kenapa perlu pilih kami",
+    trustTitle: "Fast response,Trusted,Full warranty",
+    trustDesc: "Kesemua Akaun premium kami adalah legit",
     faqEyebrow: "Soalan Lazim",
     faqTitle: "FAQ Sebelum Order",
-    faqDesc: "Sila baca dahulu sebelum PM admin.",
-    footerText: "© 2026 Numo Ventures. Semua hak cipta terpelihara.",
+    faqDesc: "Sila baca dahulu sebelum PM",
+    footerText: "© 2026 EL Stream Hub. Semua hak cipta terpelihara.",
     modalTitle: "PM Admin Numo",
     modalIntro: "Mesej order sudah siap. Tekan Buka Telegram jika browser tidak buka Telegram secara automatik.",
     telegramButton: "Buka Telegram",
@@ -57,27 +57,32 @@ window.NUMO_DIRECT_CONFIG = {
   ],
 
   TRUST_CARDS: [
-    { icon: "⚡", title: "Pantas & Mudah", text: "Order direct dengan admin. Senang confirm stock, payment dan detail akaun." },
+    { icon: "⚡", title: "Pantas & Mudah", text: "Terus dapat detail akaun selepas bayar" },
     { icon: "🛡️", title: "Full Warranty", text: "Support sepanjang tempoh langganan mengikut pakej yang dibeli." },
-    { icon: "💬", title: "Direct PM Admin", text: "Website ini tidak assign reseller. Semua order masuk terus ke admin Numo." }
+    { icon: "🛡️", title: "100% Legit", text: "Kesemua akaun kami adalah akaun legit & bukan akaun curi" },
+    { icon: "💬", title: "Trusted", text: "Kami telah menjual akaun premium sejak tahun 2015" }
   ],
 
   FAQ: [
     {
-      q: "Website ni direct reseller ke?",
-      a: "Tidak. Website ini versi direct admin. Bila customer tekan order, customer akan PM admin Numo terus."
+      q: "Kalau buat pembayaran, boleh dapat akaun terus ke?",
+      a: "Ya, boleh. Lepas payment selesai dan admin dah confirm bayaran, akaun akan terus diberikan secepat mungkin. Customer boleh terus login dan guna akaun tanpa perlu tunggu lama."
     },
     {
-      q: "Harga ikut promo dalam sistem ke?",
-      a: "Ya. Jika promo aktif dalam sistem Numo, harga promo akan dipaparkan di website ini."
+      q: "Kalau akaun ada masalah, macam mana?",
+      a: "Jangan risau, akaun ada warranty sepanjang tempoh langganan. Kalau ada apa-apa masalah macam tak boleh login, akaun sangkut, profil tak boleh guna atau masalah lain, terus je bagitahu admin. Admin akan bantu dengan fast response sampai masalah settle."
     },
     {
-      q: "Kalau stock habis macam mana?",
-      a: "Button order akan ditutup jika stock ditandakan OFF dalam sistem. Customer boleh PM admin untuk semak pilihan lain."
+      q: "Netflix akan ada masalah household tak?",
+      a: "Ya, untuk Netflix memang ada kemungkinan keluar masalah household sebab itu memang dari sistem Netflix sendiri. Tapi tak perlu risau, sebab customer boleh verify sendiri tanpa perlu tunggu admin. Nanti akan ada panduan untuk buat verification, jadi boleh sambung tengok macam biasa."
     },
     {
-      q: "Customer perlu ada Telegram?",
-      a: "Ya. Customer perlu ada Telegram untuk terima detail akaun dan support selepas order."
+      q: "Kalau renew, perlu tukar akaun ke?",
+      a: "Tak perlu tukar akaun. Kalau renew, customer boleh terus sambung guna akaun yang sama. Jadi tak perlu login akaun baru, tak perlu setup semula, dan boleh terus guna profil yang sedia ada."
+    },
+    {
+      q: "Akaun akan terkeluar sendiri tak?",
+      a: "Ya, ada kemungkinan akaun akan terkeluar sendiri dari device. Ini sebab password akaun akan ditukar dua kali sebulan untuk jaga keselamatan akaun dan elakkan orang luar masuk tanpa izin. Kalau akaun terkeluar, jangan panik. Terus hubungi admin dan admin akan bantu untuk login semula."
     }
   ]
 };
