@@ -5,8 +5,8 @@ window.NUMO_DIRECT_CONFIG = {
   SOURCE: "DIRECT_ADMIN_WEBSITE",
 
   TEXT: {
-    navBrand: "EL Stream Hub",
-    navTagline: "Anda puashati,kami happy",
+    navBrand: "EizLiya Stream Hub",
+    navTagline: "Anda puashati, kami happy",
     heroBadge: "Fast Response • Satisfied Guaranteed",
     heroTitle: "Akaun Streaming Premium",
     heroText: "Pilih platform streaming kegemaran anda, semak pakej dan terus PM.",
@@ -27,7 +27,7 @@ window.NUMO_DIRECT_CONFIG = {
     faqEyebrow: "Soalan Lazim",
     faqTitle: "FAQ Sebelum Order",
     faqDesc: "Sila baca dahulu sebelum PM",
-    footerText: "© 2026 EL Stream Hub. Semua hak cipta terpelihara.",
+    footerText: "© 2026 EizLiya Stream Hub.",
     modalTitle: "PM Admin Numo",
     modalIntro: "Mesej order sudah siap. Tekan Buka Telegram jika browser tidak buka Telegram secara automatik.",
     telegramButton: "Buka Telegram",
