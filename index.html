@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Numo Ventures | Akaun Premium Direct Admin</title>
+  <meta name="description" content="Numo Ventures - akaun premium streaming direct PM admin. Netflix, YouTube, Disney+ Hotstar, Sooka, Viu, iQiyi dan Spotify." />
+  <style>
+    :root{
+      --bg:#030607;
+      --panel:#0b1115;
+      --panel2:#0f171c;
+      --line:rgba(255,255,255,.11);
+      --soft:rgba(255,255,255,.065);
+      --text:#ffffff;
+      --muted:#a8b3ba;
+      --muted2:#71818a;
+      --cyan:#00d4df;
+      --cyan2:#009da6;
+      --green:#18e58b;
+      --red:#ff3850;
+      --yellow:#ffcf3d;
+      --radius:24px;
+      --shadow:0 22px 80px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,Arial,Helvetica,sans-serif;
+      background:
+        radial-gradient(circle at 20% -10%, rgba(0,212,223,.20), transparent 34%),
+        radial-gradient(circle at 88% 4%, rgba(255,255,255,.07), transparent 24%),
+        linear-gradient(180deg,#010303 0%,#071014 45%,#020405 100%);
+      color:var(--text);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    body:before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background-image:linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+      background-size:56px 56px;
+      mask-image:linear-gradient(to bottom,rgba(0,0,0,.55),transparent 70%);
+    }
+    a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
+    .wrap{width:min(1120px,calc(100% - 32px));margin:0 auto}
+    .nav{
+      position:sticky;
+      top:0;
+      z-index:20;
+      backdrop-filter:blur(18px);
+      background:rgba(3,6,7,.76);
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .nav-inner{height:74px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .brand img{width:46px;height:46px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(0,212,223,.25),0 0 28px rgba(0,212,223,.18)}
+    .brand strong{display:block;font-size:15px;letter-spacing:.5px;white-space:nowrap}
+    .brand span{display:block;font-size:11px;color:var(--cyan);letter-spacing:2px;margin-top:2px;white-space:nowrap}
+    .nav-links{display:flex;gap:8px;align-items:center}
+    .nav-links a{font-size:13px;color:#d8eef1;padding:10px 12px;border:1px solid transparent;border-radius:999px}
+    .nav-links a:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1)}
+    .btn{
+      border:0;
+      cursor:pointer;
+      border-radius:999px;
+      padding:13px 18px;
+      font-weight:900;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      transition:.2s ease;
+      white-space:nowrap;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .primary{background:linear-gradient(135deg,var(--cyan),#007bff);color:#fff;box-shadow:0 16px 36px rgba(0,212,223,.24)}
+    .secondary{background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.12);color:#fff}
+    .danger{background:rgba(255,56,80,.14);border:1px solid rgba(255,56,80,.28);color:#ffd6dc}
+    .hero{padding:62px 0 36px}
+    .hero-grid{display:grid;grid-template-columns:1.04fr .96fr;gap:32px;align-items:center}
+    .kicker{display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid rgba(0,212,223,.25);background:rgba(0,212,223,.08);color:#dffcff;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase}
+    .kicker:before{content:"";width:8px;height:8px;background:var(--cyan);border-radius:50%;box-shadow:0 0 20px var(--cyan)}
+    h1{font-size:clamp(36px,6vw,76px);line-height:.92;margin:20px 0 16px;letter-spacing:-2.2px}
+    .grad{background:linear-gradient(135deg,#fff 0%,#dffcff 34%,var(--cyan) 92%);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .hero p{font-size:17px;color:#c9d5da;line-height:1.72;max-width:620px;margin:0 0 22px}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+    .hero-card{
+      position:relative;
+      border:1px solid rgba(0,212,223,.19);
+      background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.035));
+      border-radius:34px;
+      padding:24px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .hero-card:before{content:"";position:absolute;width:330px;height:330px;border-radius:50%;background:rgba(0,212,223,.14);filter:blur(25px);right:-110px;top:-120px}
+    .logo-display{position:relative;display:grid;place-items:center;min-height:420px;border-radius:28px;background:radial-gradient(circle at 50% 45%,rgba(0,212,223,.18),rgba(255,255,255,.03) 45%,rgba(0,0,0,.2) 100%);border:1px solid rgba(255,255,255,.08)}
+    .logo-display img{width:min(340px,86%);border-radius:50%;filter:drop-shadow(0 0 34px rgba(0,212,223,.28))}
+    .floating-note{position:absolute;right:20px;bottom:20px;left:20px;background:rgba(0,0,0,.62);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:14px 16px;display:flex;justify-content:space-between;gap:12px;align-items:center;backdrop-filter:blur(14px)}
+    .floating-note span{font-size:12px;color:var(--muted);display:block;margin-bottom:3px}
+    .floating-note strong{font-size:18px;color:#fff}
+    .status-dot{display:inline-flex;align-items:center;gap:6px;color:#b8ffdb;font-size:12px;font-weight:800}
+    .status-dot:before{content:"";width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 18px var(--green)}
+    .section{padding:46px 0}
+    .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:22px;margin-bottom:22px}
+    .eyebrow{font-size:12px;font-weight:1000;color:var(--cyan);letter-spacing:2.4px;text-transform:uppercase;margin-bottom:8px}
+    h2{font-size:clamp(25px,3.6vw,44px);margin:0;letter-spacing:-1px}
+    .section-head p{margin:0;color:var(--muted);line-height:1.55;max-width:470px}
+    .sync{font-size:12px;color:#ffeec0;background:rgba(255,207,61,.12);border:1px solid rgba(255,207,61,.25);padding:9px 12px;border-radius:999px;white-space:nowrap}
+    .sync.live{color:#cbffe3;background:rgba(24,229,139,.1);border-color:rgba(24,229,139,.24)}
+    .hot-wrap{position:relative}
+    .hot-stage{overflow:hidden;border-radius:28px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.045)}
+    .hot-track{display:flex;transition:transform .38s ease}
+    .hot-slide{min-width:100%;padding:18px}
+    .hot-card{display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:center}
+    .hot-img{position:relative;min-height:230px;border-radius:22px;overflow:hidden;background:#050505;border:1px solid rgba(255,255,255,.08)}
+    .hot-img img{width:100%;height:100%;object-fit:contain;display:block;position:absolute;inset:0;background:#050505}
+    .hot-badge{position:absolute;left:14px;top:14px;background:#ff2c42;color:white;font-weight:1000;font-size:12px;padding:9px 12px;border-radius:999px;box-shadow:0 14px 28px rgba(255,44,66,.28)}
+    .hot-info{padding-right:12px}
+    .hot-info h3{font-size:32px;margin:0 0 8px;letter-spacing:-.8px}
+    .hot-plan{color:var(--muted);margin-bottom:12px}
+    .price-line{display:flex;align-items:baseline;gap:10px;margin:14px 0 18px}
+    .price{font-size:28px;font-weight:1000;color:#fff}
+    .old{text-decoration:line-through;color:var(--muted2);font-size:15px}
+    .hot-controls{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:12px}
+    .arrow{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.06);color:#fff;font-size:24px;cursor:pointer}
+    .dots{display:flex;gap:7px}
+    .dot{width:9px;height:9px;border:0;border-radius:99px;background:rgba(255,255,255,.28);cursor:pointer;padding:0}
+    .dot.active{width:28px;background:var(--cyan)}
+    .toolbar{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap}
+    .search{flex:1;min-width:220px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:0 16px}
+    .search input{width:100%;background:transparent;border:0;outline:0;color:#fff;padding:14px 0;font-size:15px}
+    .search input::placeholder{color:var(--muted2)}
+    .cat-row{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+    .cat-row::-webkit-scrollbar{display:none}
+    .chip{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.055);color:#d9eef0;border-radius:999px;padding:11px 14px;font-size:13px;font-weight:850;cursor:pointer;white-space:nowrap}
+    .chip.active{background:rgba(0,212,223,.14);border-color:rgba(0,212,223,.35);color:#efffff}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .product{
+      border:1px solid rgba(255,255,255,.1);
+      background:linear-gradient(180deg,rgba(255,255,255,.066),rgba(255,255,255,.034));
+      border-radius:26px;
+      overflow:hidden;
+      box-shadow:0 18px 55px rgba(0,0,0,.22);
+      display:flex;
+      flex-direction:column;
+      min-height:100%;
+    }
+    .photo-box{height:188px;background:#050505;position:relative;border-bottom:1px solid rgba(255,255,255,.08);overflow:hidden}
+    .photo-box img{width:100%;height:100%;object-fit:contain;display:block;transition:transform .3s ease;background:#050505}
+    .product:hover .photo-box img{transform:scale(1.035)}
+    .stock-pill{position:absolute;top:12px;right:12px;padding:8px 10px;border-radius:999px;font-size:11px;font-weight:1000;backdrop-filter:blur(12px);background:rgba(24,229,139,.92);color:#032414}
+    .stock-pill.off{background:rgba(255,56,80,.92);color:#fff}
+    .stock-pill.warn{background:rgba(255,207,61,.94);color:#241900}
+    .product-body{padding:16px;display:flex;flex-direction:column;gap:12px;flex:1}
+    .p-name{font-size:19px;font-weight:1000;letter-spacing:-.2px}
+    .p-desc{font-size:13px;color:var(--muted);line-height:1.5;min-height:38px}
+    .from{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;color:var(--muted);font-size:12px}
+    .from strong{display:block;color:#fff;font-size:21px;margin-top:2px}
+    .view{width:100%;margin-top:auto;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:16px;padding:13px;font-weight:1000;cursor:pointer}
+    .plans{display:none;padding:0 16px 16px;gap:10px}
+    .product.open .plans{display:grid}
+    .subhead{font-weight:1000;color:var(--cyan);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:2px 0 0}
+    .plan{border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.22);border-radius:17px;padding:12px;display:grid;gap:10px}
+    .plan-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .plan-name{font-weight:900;font-size:14px}
+    .badge{font-size:10px;font-weight:1000;border-radius:999px;padding:6px 8px;background:rgba(0,212,223,.16);color:#ddffff;border:1px solid rgba(0,212,223,.23);white-space:nowrap}
+    .badge.red{background:rgba(255,56,80,.16);border-color:rgba(255,56,80,.22);color:#ffdce1}
+    .badge.green{background:rgba(24,229,139,.13);border-color:rgba(24,229,139,.22);color:#d8ffe8}
+    .badge.blue{background:rgba(0,123,255,.16);border-color:rgba(0,123,255,.22);color:#dcedff}
+    .note{font-size:12px;color:#d0d8dc;background:rgba(255,255,255,.055);border-radius:12px;padding:8px;line-height:1.4}
+    .plan-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .mini-price{font-size:20px;font-weight:1000;color:#fff;white-space:nowrap}
+    .mini-old{text-decoration:line-through;color:var(--muted2);font-size:12px;margin-left:4px}
+    .buy{border:0;background:linear-gradient(135deg,var(--cyan),#0084ff);color:#fff;border-radius:999px;padding:10px 13px;font-weight:1000;cursor:pointer;white-space:nowrap;font-size:12px}
+    .buy:disabled{background:#394349;color:#9da8ad;cursor:not-allowed}
+    .bundle-grid,.trust-grid,.faq-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .bundle,.trust,.faq{
+      border:1px solid rgba(255,255,255,.1);
+      background:rgba(255,255,255,.055);
+      border-radius:24px;
+      padding:18px;
+    }
+    .bundle{position:relative;overflow:hidden}
+    .bundle:before{content:"";position:absolute;inset:auto -30px -80px auto;width:160px;height:160px;border-radius:50%;background:rgba(0,212,223,.12);filter:blur(10px)}
+    .bundle-tag{display:inline-flex;margin-bottom:13px;color:#001013;background:var(--cyan);font-weight:1000;border-radius:999px;padding:7px 10px;font-size:11px;letter-spacing:.5px}
+    .bundle h3,.trust h3,.faq h3{margin:0 0 9px;font-size:18px}
+    .bundle p,.trust p,.faq p{margin:0;color:var(--muted);line-height:1.55;font-size:14px}
+    .bundle .price{font-size:25px;margin:14px 0 12px;display:block}
+    .trust .icon{width:42px;height:42px;display:grid;place-items:center;border-radius:15px;background:rgba(0,212,223,.12);border:1px solid rgba(0,212,223,.2);margin-bottom:13px;font-size:20px}
+    .faq-grid{grid-template-columns:1fr 1fr}
+    details.faq{padding:0;overflow:hidden}
+    details.faq summary{cursor:pointer;list-style:none;padding:18px;font-weight:1000}
+    details.faq summary::-webkit-details-marker{display:none}
+    details.faq p{padding:0 18px 18px}
+    .empty{border:1px dashed rgba(255,255,255,.18);border-radius:22px;padding:22px;color:var(--muted);text-align:center;background:rgba(255,255,255,.035)}
+    .footer{border-top:1px solid rgba(255,255,255,.09);padding:34px 0;color:var(--muted);font-size:13px;text-align:center}
+    .sticky-cta{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:18;background:rgba(7,13,16,.86);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.13);box-shadow:0 20px 60px rgba(0,0,0,.45);border-radius:999px;padding:8px;display:none;gap:10px;align-items:center;max-width:calc(100% - 24px)}
+    .sticky-cta span{padding-left:10px;font-size:13px;color:#dce6e8;white-space:nowrap}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.74);z-index:60;display:none;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(12px)}
+    .modal.show{display:flex}
+    .modal-card{width:min(520px,100%);border:1px solid rgba(0,212,223,.25);background:linear-gradient(180deg,#111b20,#070c0f);border-radius:28px;box-shadow:0 30px 90px rgba(0,0,0,.55);padding:20px;position:relative}
+    .x{position:absolute;right:14px;top:14px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;font-size:20px}
+    .modal-logo{width:58px;height:58px;border-radius:50%;object-fit:cover;margin-bottom:12px}
+    .modal-card h3{font-size:25px;margin:0 0 8px}
+    .modal-card p{margin:0;color:var(--muted);line-height:1.55}
+    .order-summary{margin:16px 0;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);border-radius:18px;overflow:hidden}
+    .row{display:flex;justify-content:space-between;gap:14px;padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.08);font-size:13px}
+    .row:last-child{border-bottom:0}
+    .row span{color:var(--muted)}
+    .row strong{text-align:right}
+    .msg-box{border:1px dashed rgba(0,212,223,.32);background:rgba(0,212,223,.07);border-radius:16px;padding:12px;color:#dffcff;font-size:13px;line-height:1.5;white-space:pre-wrap;margin-top:12px}
+    .modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+    .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:#fff;color:#071014;border-radius:999px;padding:12px 16px;font-size:13px;font-weight:900;z-index:80;box-shadow:0 16px 50px rgba(0,0,0,.34);transition:.2s ease}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .hidden{display:none!important}
+    @media(max-width:920px){
+      .nav-links a{display:none}
+      .hero-grid,.hot-card{grid-template-columns:1fr}
+      .logo-display{min-height:330px}
+      .grid,.bundle-grid,.trust-grid{grid-template-columns:1fr 1fr}
+      .hot-img{min-height:210px}
+    }
+    @media(max-width:620px){
+      .wrap{width:min(100% - 24px,1120px)}
+      .nav-inner{height:66px}
+      .brand img{width:42px;height:42px}
+      .brand strong{font-size:13px}
+      .brand span{font-size:10px;letter-spacing:1.4px}
+      .nav .primary{padding:11px 13px;font-size:12px}
+      .hero{padding:38px 0 24px}
+      h1{letter-spacing:-1.5px}
+      .hero p{font-size:15px}
+      .hero-actions .btn{width:100%}
+      .hero-card{padding:14px;border-radius:26px}
+      .logo-display{min-height:285px;border-radius:21px}
+      .floating-note{position:relative;left:auto;right:auto;bottom:auto;margin-top:12px}
+      .section{padding:34px 0}
+      .section-head{display:block}
+      .section-head p{margin-top:10px}
+      .sync{display:inline-flex;margin-top:12px}
+      .grid,.bundle-grid,.trust-grid,.faq-grid{grid-template-columns:1fr}
+      .photo-box{height:190px}
+      .toolbar{display:block}
+      .cat-row{margin-top:10px}
+      .hot-slide{padding:12px}
+      .hot-info h3{font-size:24px}
+      .modal-actions{grid-template-columns:1fr}
+      .sticky-cta{display:flex}
+      .footer{padding-bottom:86px}
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#top" aria-label="Numo Ventures home">
+        <img id="navLogo" src="numologo.png" alt="Numo Ventures Logo" />
+        <div>
+          <strong id="navBrand">Numo Ventures</strong>
+          <span id="navTagline">JANJI TAK SIDAI</span>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a href="#produk">Pakej</a>
+        <a href="#bundle">Bundle</a>
+        <a href="#faq">FAQ</a>
+        <a id="navTelegram" class="btn primary" href="https://t.me/ownernumoventures" target="_blank" rel="noopener">PM Admin</a>
+      </div>
+    </div>
+  </nav>
+
+  <header id="top" class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div id="heroBadge" class="kicker">Direct Admin • Fast Response</div>
+        <h1 id="heroTitle">Akaun Premium Strim <span class="grad">Direct Numo</span></h1>
+        <p id="heroText">Pilih platform kegemaran anda, semak pakej dan terus PM admin Numo. Tiada round robin reseller untuk website ini.</p>
+        <div class="hero-actions">
+          <a id="heroPrimary" class="btn primary" href="#produk">Lihat Pakej</a>
+          <a id="heroSecondary" class="btn secondary" href="#bundle">Pakej Bundle</a>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="logo-display">
+          <img id="heroLogo" src="numologo.png" alt="Numo Ventures Logo" />
+        </div>
+        <div class="floating-note">
+          <div>
+            <span>Order channel</span>
+            <strong>Direct PM Admin</strong>
+          </div>
+          <div class="status-dot">Online</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="hot" class="section hidden">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div id="hotEyebrow" class="eyebrow">Hot Selling</div>
+            <h2 id="hotTitle">Pilihan Paling Hot</h2>
+          </div>
+          <p id="hotDesc">Promo aktif dari sistem Numo akan keluar di sini.</p>
+        </div>
+        <div id="hotGrid" class="hot-wrap"></div>
+      </div>
+    </section>
+
+    <section id="produk" class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div id="productEyebrow" class="eyebrow">Pilihan Platform Kami</div>
+            <h2 id="productTitle">Akaun Premium Pilihan</h2>
+          </div>
+          <div>
+            <p id="productDesc">Tekan produk untuk lihat harga. Bila customer order, terus PM admin Numo.</p>
+            <div id="syncStatus" class="sync">Syncing...</div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search">
+            <span>⌕</span>
+            <input id="searchInput" type="search" placeholder="Cari produk..." />
+          </div>
+          <div id="categoryButtons" class="cat-row"></div>
+        </div>
+
+        <div id="productsGrid" class="grid"></div>
+        <div id="emptyBox" class="empty hidden">Tiada produk dijumpai.</div>
+      </div>
+    </section>
+
+    <section id="bundle" class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div id="bundleEyebrow" class="eyebrow">Jimat Lebih Banyak</div>
+            <h2 id="bundleTitle">Pakej Bundle Numo</h2>
+          </div>
+          <p id="bundleDesc">Bundle ni direct PM admin. Admin akan confirm stock dan harga semasa.</p>
+        </div>
+        <div id="bundleGrid" class="bundle-grid"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div id="trustEyebrow" class="eyebrow">Kenapa Numo</div>
+            <h2 id="trustTitle">Simple, Pantas, Berwaranti</h2>
+          </div>
+          <p id="trustDesc">Customer terus berhubung dengan admin untuk order, payment dan support.</p>
+        </div>
+        <div id="trustGrid" class="trust-grid"></div>
+      </div>
+    </section>
+
+    <section id="faq" class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div id="faqEyebrow" class="eyebrow">Soalan Lazim</div>
+            <h2 id="faqTitle">FAQ Sebelum Order</h2>
+          </div>
+          <p id="faqDesc">Sila baca dahulu sebelum PM admin.</p>
+        </div>
+        <div id="faqGrid" class="faq-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div id="footerText">© 2026 Numo Ventures. Semua hak cipta terpelihara.</div>
+    </div>
+  </footer>
+
+  <div class="sticky-cta">
+    <span>Nak order sekarang?</span>
+    <a class="btn primary" href="#produk">Lihat Pakej</a>
+  </div>
+
+  <div id="orderModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <button id="closeModal" class="x" type="button" aria-label="Tutup">×</button>
+      <img id="modalLogo" class="modal-logo" src="numologo.png" alt="Numo Ventures" />
+      <h3 id="modalTitle">PM Admin Numo</h3>
+      <p id="modalIntro">Mesej order sudah siap. Tekan Buka Telegram jika browser tidak buka Telegram secara automatik.</p>
+      <div class="order-summary">
+        <div class="row"><span>Produk</span><strong id="modalProduct">-</strong></div>
+        <div class="row"><span>Pakej</span><strong id="modalPlan">-</strong></div>
+        <div class="row"><span>Harga</span><strong id="modalPrice">-</strong></div>
+        <div class="row"><span>Lead ID</span><strong id="modalLead">-</strong></div>
+      </div>
+      <div id="modalMessage" class="msg-box"></div>
+      <div class="modal-actions">
+        <button id="copyMessage" class="btn secondary hidden" type="button">Copy Mesej</button>
+        <a id="openTelegram" class="btn primary" href="https://t.me/ownernumoventures" target="_blank" rel="noopener">Buka Telegram</a>
+      </div>
+      <button id="newOrder" class="btn danger" type="button" style="width:100%;margin-top:10px">Tutup</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Copied</div>
+  <iframe id="configFrame" src="index2.html" style="display:none" title="config"></iframe>
+  <script src="app2.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
