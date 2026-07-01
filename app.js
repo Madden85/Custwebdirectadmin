@@ -15,6 +15,7 @@ let hotTimer = null;
 let currentOrderMessage = "";
 let currentTelegramUrl = "";
 let currentPaymentOrder = null;
+let paymentModalHistoryActive = false;
 
 const PRODUCTS = [
   {
@@ -548,6 +549,11 @@ function showPaymentForm(order, button) {
 
   const form = $("paymentForm");
   if (form) form.reset();
+
+  // Android/browser Back button fix:
+  // Bila payment modal terbuka, Back akan tutup modal dulu, bukan terus keluar website.
+  openPaymentModalHistory();
+
   $("paymentModal")?.classList.add("show");
   setTimeout(() => $("payName")?.focus(), 80);
 }
@@ -604,12 +610,44 @@ function ensurePaymentModal() {
   `;
   document.body.insertAdjacentHTML("beforeend", html);
 
-  const close = () => $("paymentModal")?.classList.remove("show");
+  const close = () => closePaymentModal(false);
   $("closePaymentModal").onclick = close;
   $("cancelPayment").onclick = close;
   $("paymentModal").onclick = e => { if (e.target.id === "paymentModal") close(); };
   $("paymentForm").onsubmit = submitPaymentForm;
 }
+
+function openPaymentModalHistory() {
+  if (paymentModalHistoryActive) return;
+  try {
+    window.history.pushState({ paymentModal: true }, "", window.location.href);
+    paymentModalHistoryActive = true;
+  } catch (e) {
+    paymentModalHistoryActive = false;
+  }
+}
+
+function closePaymentModal(fromBack) {
+  const modal = $("paymentModal");
+  if (modal) modal.classList.remove("show");
+
+  if (fromBack) {
+    paymentModalHistoryActive = false;
+    return;
+  }
+
+  if (paymentModalHistoryActive) {
+    paymentModalHistoryActive = false;
+    try { window.history.back(); } catch (e) {}
+  }
+}
+
+window.addEventListener("popstate", () => {
+  const modal = $("paymentModal");
+  if (modal && modal.classList.contains("show")) {
+    closePaymentModal(true);
+  }
+});
 
 async function submitPaymentForm(e) {
   e.preventDefault();
