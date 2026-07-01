@@ -1,5 +1,5 @@
 /************************************************************
- * EIZLIYA STREAM HUB - TOYYIBPAY CHECKOUT V1
+ * EIZLIYA STREAM HUB - TOYYIBPAY CHECKOUT V3 STOCK SYNC FIX
  * Uses Website Control API for stock, normal price, promo price and ToyyibPay bill.
  * Customer pays first, then success page opens Telegram admin with paid order message.
  ************************************************************/
@@ -578,7 +578,7 @@ function ensurePaymentModal() {
         <button id="closePaymentModal" class="x" type="button" aria-label="Tutup">×</button>
         <img id="payLogo" class="modal-logo" src="${attr(CONFIG.LOGO_IMAGE || "numologo.png")}" alt="Logo">
         <h3>Bayar Sekarang</h3>
-        <p>Sila isi detail dibawah</p>
+        <p>Isi detail ringkas dahulu. Lepas bayar, sistem akan bawa anda terus ke Telegram admin dengan mesej order siap.</p>
 
         <div class="order-summary">
           <div class="row"><span>Produk</span><strong id="payProduct">-</strong></div>
@@ -599,9 +599,9 @@ function ensurePaymentModal() {
             </label>
           </div>
           <div id="payError" class="pay-error"></div>
-          <div class="payment-note">Pastikan produk, Pakej dan harga yang dipaparkan adalah betul</div>
+          <div class="payment-note">Amount payment akan ikut harga sistem. Customer tidak boleh ubah amount sendiri.</div>
           <div class="modal-actions">
-            <button id="submitPayment" class="btn primary" type="submit">Teruskan Pembayaran</button>
+            <button id="submitPayment" class="btn primary" type="submit">Terus ke ToyyibPay</button>
             <button id="cancelPayment" class="btn danger" type="button">Tutup</button>
           </div>
         </form>
@@ -683,7 +683,7 @@ async function submitPaymentForm(e) {
   } finally {
     if (submit) {
       submit.disabled = false;
-      submit.textContent = old || "Teruskan Pembayaran";
+      submit.textContent = old || "Terus ke ToyyibPay";
     }
   }
 }
@@ -949,11 +949,20 @@ function getStock(product, section = "ALL") {
   );
 }
 function isStockOn(product, section = "ALL") {
+  // V3 STOCK SYNC FIX:
+  // Frontend now follows live stock strictly.
+  // If stock has not synced yet OR no stock row exists for this product/section,
+  // customer cannot click Bayar Sekarang.
+  if (!control.loaded) return false;
   const x = getStock(product, section);
-  return !x || normalize(x.status) !== "OFF";
+  if (!x) return false;
+  return ["ON", "ACTIVE", "READY", "YES", "TRUE"].includes(normalize(x.status));
 }
 function getStockText(product, section = "ALL") {
-  return getStock(product, section)?.stockText || TXT.soldOutLabel || "Habis Stok";
+  if (!control.loaded) return TXT.syncing || "Syncing...";
+  const x = getStock(product, section);
+  if (!x) return TXT.soldOutLabel || "Habis Stok";
+  return x.stockText || (isStockOn(product, section) ? (TXT.readyLabel || "Ready") : (TXT.soldOutLabel || "Habis Stok"));
 }
 function isAvailable(product, section = "ALL") {
   const p = findProduct(product);
