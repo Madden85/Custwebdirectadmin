@@ -1,6 +1,6 @@
 /************************************************************
- * EIZLIYA STREAM HUB - TOYYIBPAY CHECKOUT V3 STOCK SYNC FIX
- * Uses Website Control API for stock, normal price, promo price and ToyyibPay bill.
+ * EIZLIYA STREAM HUB - TOYYIBPAY CHECKOUT V5 ADMIN PANEL STOCK LOGIC
+ * Uses Website Control API stock logic following Customer Website 1 / admin panel mapping.
  * Customer pays first, then success page opens Telegram admin with paid order message.
  ************************************************************/
 
@@ -287,7 +287,7 @@ async function loadControl() {
       loaded: true
     };
 
-    setSync(TXT.liveStockPromo || "Live stock & promo", "live");
+    setSync((TXT.liveStockPromo || "Live stock & promo") + " • V5 admin panel", "live");
   } catch (e) {
     control.loaded = false;
     setSync(TXT.offlinePriceMode || "Tidak dapat sync. Guna harga default.", "warn");
@@ -521,6 +521,19 @@ function renderFaq() {
 function bindBuyButtons(root) {
   if (!root) return;
   root.querySelectorAll("[data-buy-product]").forEach(btn => {
+    const product = btn.dataset.buyProduct;
+    const section = btn.dataset.buySection || "ALL";
+
+    // V5 ADMIN PANEL STOCK LOGIC:
+    // Even if old HTML/button is still visible, button will be disabled if stock is not ON.
+    if (!isAvailable(product, section)) {
+      btn.disabled = true;
+      btn.textContent = getStockText(product, section);
+      btn.classList.add("disabled-stock");
+      btn.onclick = null;
+      return;
+    }
+
     btn.onclick = () => {
       const order = {
         product: btn.dataset.buyProduct,
@@ -528,12 +541,35 @@ function bindBuyButtons(root) {
         duration: btn.dataset.buyDuration,
         price: btn.dataset.buyPrice
       };
+
+      if (!isAvailable(order.product, order.section)) {
+        btn.disabled = true;
+        btn.textContent = getStockText(order.product, order.section);
+        toast(getStockText(order.product, order.section));
+        renderProducts();
+        renderHotSelling();
+        return;
+      }
+
       showPaymentForm(order, btn);
     };
   });
 }
 
 function showPaymentForm(order, button) {
+  // V5 safety: never open payment modal if admin panel stock is not available.
+  if (!isAvailable(order.product, order.section || "ALL")) {
+    const msg = getStockText(order.product, order.section || "ALL");
+    if (button) {
+      button.disabled = true;
+      button.textContent = msg;
+    }
+    toast(msg || "Produk habis stok");
+    renderProducts();
+    renderHotSelling();
+    return;
+  }
+
   currentPaymentOrder = { ...order, button };
   ensurePaymentModal();
 
@@ -672,6 +708,10 @@ async function submitPaymentForm(e) {
     if (submit) {
       submit.disabled = true;
       submit.textContent = TXT.preparingOrder || "Buka payment...";
+    }
+
+    if (!isAvailable(order.product, order.section || "ALL")) {
+      throw new Error(getStockText(order.product, order.section || "ALL") || "Produk habis stok");
     }
 
     const bill = await createPaymentBill(order, { customerName, phone, email });
@@ -938,39 +978,53 @@ function isPromoActive(p) {
   return p && ["ON", "YES", "TRUE", "ACTIVE"].includes(normalize(p.promoActive));
 }
 function getStock(product, section = "ALL") {
-  const exact = control.stock.find(x =>
+  // V5: ikut logic Customer Website 1 / admin panel.
+  // Cari row stock ikut Product + Section yang sama.
+  // Manual OFF di STOCK_CONTROL akan override live stock sebab backend Website Control dah merge data admin panel.
+  return (control.stock || []).find(x =>
     normalize(x.product) === normalize(product) &&
     normalize(x.section || "ALL") === normalize(section || "ALL")
-  );
-  if (exact) return exact;
-  return control.stock.find(x =>
-    normalize(x.product) === normalize(product) &&
-    normalize(x.section || "ALL") === "ALL"
-  );
+  ) || null;
 }
+
 function isStockOn(product, section = "ALL") {
-  // V3 STOCK SYNC FIX:
-  // Frontend now follows live stock strictly.
-  // If stock has not synced yet OR no stock row exists for this product/section,
-  // customer cannot click Bayar Sekarang.
   if (!control.loaded) return false;
   const x = getStock(product, section);
+
+  // Dalam Website Customer 1, row yang tak jumpa dianggap tidak OFF.
+  // Tapi untuk Customer Website 2 payment, kita kekalkan guard selamat:
+  // kalau stock belum wujud dalam data admin panel, jangan buka payment.
   if (!x) return false;
-  return ["ON", "ACTIVE", "READY", "YES", "TRUE"].includes(normalize(x.status));
+
+  const status = normalize(x.status || "");
+  if (["OFF", "NO", "FALSE", "HABIS", "HABIS STOK", "OUT", "SOLD OUT", "EMPTY", "KOSONG", "0"].includes(status)) return false;
+
+  // Kalau backend hantar available=0, block juga walaupun text/status tersalah.
+  if (x.available !== undefined && x.available !== "" && Number(x.available) <= 0 && !["ON", "ACTIVE", "READY", "YES", "TRUE"].includes(status)) return false;
+
+  return ["ON", "ACTIVE", "READY", "YES", "TRUE"].includes(status) || status !== "";
 }
+
 function getStockText(product, section = "ALL") {
   if (!control.loaded) return TXT.syncing || "Syncing...";
   const x = getStock(product, section);
   if (!x) return TXT.soldOutLabel || "Habis Stok";
   return x.stockText || (isStockOn(product, section) ? (TXT.readyLabel || "Ready") : (TXT.soldOutLabel || "Habis Stok"));
 }
+
 function isAvailable(product, section = "ALL") {
   const p = findProduct(product);
+
+  // Sama macam Customer Website 1: kalau product ada sub-section,
+  // card product = available kalau salah satu section ON.
+  // Button pakej pula ikut section masing-masing.
   if (p?.sections && normalize(section) === "ALL") {
     return p.sections.some(s => isStockOn(product, s.title));
   }
+
   return isStockOn(product, section);
 }
+
 function lowestPrice(p) {
   const list = [];
   if (p.sections) p.sections.forEach(s => s.plans.forEach(plan => list.push({ plan, section: s.title })));
