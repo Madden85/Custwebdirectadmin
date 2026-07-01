@@ -26,8 +26,8 @@
   <main class="card">
     <img id="logo" class="logo" src="numologo.png" alt="Logo">
     <div id="statusPill" class="pill"><span class="loading"></span>Semak payment...</div>
-    <h1 id="title">Sila tunggu sekejap</h1>
-    <p id="desc">Kami sedang semak status payment anda. Jika payment berjaya, Telegram admin akan dibuka dengan mesej order siap.</p>
+    <h1 id="title">Sila tunggu</h1>
+    <p id="desc">Sistem edang semak status payment. Jika payment berjaya, anda akan dibawa ke telegram admin</p>
 
     <div class="summary">
       <div class="row"><span>Order ID</span><strong id="orderId">-</strong></div>
@@ -114,7 +114,7 @@
         $("statusPill").className = "pill ok";
         $("statusPill").textContent = "Payment berjaya ✅";
         $("title").textContent = "Payment berjaya";
-        $("desc").textContent = "Tekan PM Admin untuk teruskan order. Telegram juga akan dibuka automatik.";
+        $("desc").textContent = "Tekan PM Admin untuk teruskan order.";
         if(!autoOpened){
           autoOpened = true;
           setTimeout(()=>{ window.location.href = latestTelegramUrl; }, 1600);
