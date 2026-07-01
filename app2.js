@@ -9,7 +9,7 @@ window.NUMO_DIRECT_CONFIG = {
     navTagline: "Anda puashati, kami happy",
     heroBadge: "Fast Response • Satisfied Guaranteed",
     heroTitle: "Akaun Streaming Premium",
-    heroText: "Pilih platform streaming kegemaran anda, semak pakej dan bayar terus melalui ToyyibPay.",
+    heroText: "Pilih platform streaming kegemaran anda, semak pakej dan teruskan pembayaran",
     heroPrimary: "Lihat Pakej",
     heroSecondary: "Pakej Bundle",
     hotEyebrow: "Hot Selling",
