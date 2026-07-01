@@ -578,7 +578,7 @@ function ensurePaymentModal() {
         <button id="closePaymentModal" class="x" type="button" aria-label="Tutup">×</button>
         <img id="payLogo" class="modal-logo" src="${attr(CONFIG.LOGO_IMAGE || "numologo.png")}" alt="Logo">
         <h3>Bayar Sekarang</h3>
-        <p>Isi detail ringkas dahulu. Lepas bayar, sistem akan bawa anda terus ke Telegram admin.</p>
+        <p>Sila isi detail dibawah dan tekan button Teruskan pembayaran</p>
 
         <div class="order-summary">
           <div class="row"><span>Produk</span><strong id="payProduct">-</strong></div>
