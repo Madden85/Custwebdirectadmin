@@ -23,7 +23,7 @@ const PRODUCTS = [
     display: "Netflix Premium",
     image: "netflix.jpg",
     category: "Streaming",
-    desc: "Private profile dan warranty penuh.",
+    desc: "Private profile dan warranty penuh sepanjang langganan.",
     plans: [
       { duration: "1 Bulan", price: "RM25" },
       { duration: "2 Bulan", price: "RM50" },
@@ -635,8 +635,8 @@ function ensurePaymentModal() {
       <div class="modal-card">
         <button id="closePaymentModal" class="x" type="button" aria-label="Tutup">×</button>
         <img id="payLogo" class="modal-logo" src="${attr(CONFIG.LOGO_IMAGE || "numologo.png")}" alt="Logo">
-        <h3>Bayar Sekarang</h3>
-        <p>Isi detail ringkas dahulu. Lepas bayar, sistem akan bawa anda terus ke Telegram admin dengan mesej order siap.</p>
+        <h3>Lengkapkan detail</h3>
+        <p>Isi detail dibawah</p>
 
         <div class="order-summary">
           <div class="row"><span>Produk</span><strong id="payProduct">-</strong></div>
@@ -657,7 +657,7 @@ function ensurePaymentModal() {
             </label>
           </div>
           <div id="payError" class="pay-error"></div>
-          <div class="payment-note">Amount payment akan ikut harga sistem. Customer tidak boleh ubah amount sendiri.</div>
+          <div class="payment-note">Sila pastikan produk,Pakej dan Harga adalah betul</div>
           <div class="modal-actions">
             <button id="submitPayment" class="btn primary" type="submit">Terus ke ToyyibPay</button>
             <button id="cancelPayment" class="btn danger" type="button">Tutup</button>
