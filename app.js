@@ -578,7 +578,7 @@ function ensurePaymentModal() {
         <button id="closePaymentModal" class="x" type="button" aria-label="Tutup">×</button>
         <img id="payLogo" class="modal-logo" src="${attr(CONFIG.LOGO_IMAGE || "numologo.png")}" alt="Logo">
         <h3>Bayar Sekarang</h3>
-        <p>Isi detail ringkas dahulu. Lepas bayar, sistem akan bawa anda terus ke Telegram admin dengan mesej order siap.</p>
+        <p>Isi detail ringkas dahulu. Lepas bayar, sistem akan bawa anda terus ke Telegram admin.</p>
 
         <div class="order-summary">
           <div class="row"><span>Produk</span><strong id="payProduct">-</strong></div>
@@ -599,9 +599,9 @@ function ensurePaymentModal() {
             </label>
           </div>
           <div id="payError" class="pay-error"></div>
-          <div class="payment-note">Amount payment akan ikut harga sistem. Customer tidak boleh ubah amount sendiri.</div>
+          <div class="payment-note">Pastikan produk, Pakej dan harga yang dipaparkan adalah betul</div>
           <div class="modal-actions">
-            <button id="submitPayment" class="btn primary" type="submit">Terus ke ToyyibPay</button>
+            <button id="submitPayment" class="btn primary" type="submit">Teruskan Pembayaran</button>
             <button id="cancelPayment" class="btn danger" type="button">Tutup</button>
           </div>
         </form>
@@ -683,7 +683,7 @@ async function submitPaymentForm(e) {
   } finally {
     if (submit) {
       submit.disabled = false;
-      submit.textContent = old || "Terus ke ToyyibPay";
+      submit.textContent = old || "Teruskan Pembayaran";
     }
   }
 }
