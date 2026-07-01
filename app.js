@@ -1,6 +1,6 @@
 /************************************************************
- * EIZLIYA STREAM HUB - TOYYIBPAY CHECKOUT V5 ADMIN PANEL STOCK LOGIC
- * Uses Website Control API stock logic following Customer Website 1 / admin panel mapping.
+ * EIZLIYA STREAM HUB - TOYYIBPAY CHECKOUT V7 WEB1 STOCK + TOYYIBPAY PRICE
+ * Uses Customer Website 1 endpoint for stock, ToyyibPay endpoint for prices/payment.
  * Customer pays first, then success page opens Telegram admin with paid order message.
  ************************************************************/
 
@@ -257,6 +257,14 @@ function setHeroTitle(title) {
   $("heroTitle").innerHTML = updated;
 }
 
+function getControlApiUrl() {
+  return String(CONFIG.CONTROL_API_URL || CONFIG.STOCK_API_URL || CONFIG.API_URL || "").trim();
+}
+
+function getPaymentApiUrl() {
+  return String(CONFIG.PAYMENT_API_URL || CONFIG.API_URL || "").trim();
+}
+
 function bindBaseEvents() {
   if ($("searchInput")) $("searchInput").addEventListener("input", renderProducts);
   if ($("closeModal")) $("closeModal").onclick = closeModal;
@@ -273,21 +281,35 @@ async function loadControl() {
   setSync(TXT.syncing || "Syncing...", "warn");
 
   try {
-    const apiUrl = CONFIG.API_URL || "";
-    if (!apiUrl || apiUrl.includes("PASTE_")) throw new Error("API URL not set");
+    const stockApiUrl = getControlApiUrl();
+    const paymentApiUrl = getPaymentApiUrl();
+    if (!stockApiUrl || stockApiUrl.includes("PASTE_")) throw new Error("Control API URL not set");
+    if (!paymentApiUrl || paymentApiUrl.includes("PASTE_")) throw new Error("Payment API URL not set");
 
-    const r = await jsonp({ mode: "getWebsiteControl", _: Date.now() });
-    if (!r.ok) throw new Error(r.error || "API error");
+    // Stock ikut Customer Website 1 endpoint.
+    const stockRes = await jsonp({ mode: "getWebsiteControl", _: Date.now() }, stockApiUrl);
+    if (!stockRes.ok) throw new Error(stockRes.error || "Stock API error");
+
+    // Price/promo/hot selling ikut ToyyibPay payment endpoint sebab endpoint ini ada Normal Price.
+    let priceRes = null;
+    try {
+      priceRes = await jsonp({ mode: "getWebsiteControl", _: Date.now() }, paymentApiUrl);
+    } catch (e) {
+      priceRes = null;
+    }
+
+    const stockData = stockRes.data || {};
+    const priceData = priceRes && priceRes.ok ? (priceRes.data || {}) : {};
 
     control = {
-      stock: r.data?.stock || [],
-      promos: r.data?.promos || [],
-      hotSelling: r.data?.hotSelling || [],
-      meta: r.data?.meta || {},
+      stock: stockData.stock || [],
+      promos: priceData.promos || stockData.promos || [],
+      hotSelling: priceData.hotSelling || stockData.hotSelling || [],
+      meta: { ...(stockData.meta || {}), paymentMeta: priceData.meta || {} },
       loaded: true
     };
 
-    setSync((TXT.liveStockPromo || "Live stock & promo") + " • V5 admin panel", "live");
+    setSync((TXT.liveStockPromo || "Live stock & promo") + " • V7 stock ikut Web 1", "live");
   } catch (e) {
     control.loaded = false;
     setSync(TXT.offlinePriceMode || "Tidak dapat sync. Guna harga default.", "warn");
@@ -729,8 +751,8 @@ async function submitPaymentForm(e) {
 }
 
 async function createPaymentBill(order, customer) {
-  const apiUrl = CONFIG.API_URL || "";
-  if (!apiUrl || apiUrl.includes("PASTE_")) throw new Error("API URL not set");
+  const apiUrl = getPaymentApiUrl();
+  if (!apiUrl || apiUrl.includes("PASTE_")) throw new Error("Payment API URL not set");
 
   const successUrl = new URL("success.html", window.location.href).href;
   const r = await jsonp({
@@ -744,7 +766,7 @@ async function createPaymentBill(order, customer) {
     successUrl,
     source: CONFIG.SOURCE || "DIRECT_ADMIN_WEBSITE",
     _: Date.now()
-  });
+  }, apiUrl);
 
   if (!r.ok) throw new Error(r.error || "ToyyibPay bill gagal dibuat");
   return r.data || {};
@@ -978,9 +1000,7 @@ function isPromoActive(p) {
   return p && ["ON", "YES", "TRUE", "ACTIVE"].includes(normalize(p.promoActive));
 }
 function getStock(product, section = "ALL") {
-  // V5: ikut logic Customer Website 1 / admin panel.
-  // Cari row stock ikut Product + Section yang sama.
-  // Manual OFF di STOCK_CONTROL akan override live stock sebab backend Website Control dah merge data admin panel.
+  // V7: exact stock lookup ikut Customer Website 1 endpoint.
   return (control.stock || []).find(x =>
     normalize(x.product) === normalize(product) &&
     normalize(x.section || "ALL") === normalize(section || "ALL")
@@ -988,38 +1008,41 @@ function getStock(product, section = "ALL") {
 }
 
 function isStockOn(product, section = "ALL") {
-  if (!control.loaded) return false;
+  // Exact Customer Website 1 logic:
+  // row tak jumpa = dianggap bukan OFF; row jumpa hanya OFF kalau status OFF.
   const x = getStock(product, section);
-
-  // Dalam Website Customer 1, row yang tak jumpa dianggap tidak OFF.
-  // Tapi untuk Customer Website 2 payment, kita kekalkan guard selamat:
-  // kalau stock belum wujud dalam data admin panel, jangan buka payment.
-  if (!x) return false;
-
-  const status = normalize(x.status || "");
-  if (["OFF", "NO", "FALSE", "HABIS", "HABIS STOK", "OUT", "SOLD OUT", "EMPTY", "KOSONG", "0"].includes(status)) return false;
-
-  // Kalau backend hantar available=0, block juga walaupun text/status tersalah.
-  if (x.available !== undefined && x.available !== "" && Number(x.available) <= 0 && !["ON", "ACTIVE", "READY", "YES", "TRUE"].includes(status)) return false;
-
-  return ["ON", "ACTIVE", "READY", "YES", "TRUE"].includes(status) || status !== "";
+  return !x || normalize(x.status) !== "OFF";
 }
 
 function getStockText(product, section = "ALL") {
-  if (!control.loaded) return TXT.syncing || "Syncing...";
-  const x = getStock(product, section);
-  if (!x) return TXT.soldOutLabel || "Habis Stok";
-  return x.stockText || (isStockOn(product, section) ? (TXT.readyLabel || "Ready") : (TXT.soldOutLabel || "Habis Stok"));
+  return getStock(product, section)?.stockText || TXT.soldOutLabel || "Habis Stok";
+}
+
+function sookaStates() {
+  const devices = [
+    { key: "TV", label: "TV" },
+    { key: "PHONE", label: "Phone" },
+    { key: "TABLET", label: "Tablet" }
+  ];
+
+  const deviceRows = devices.some(d => getStock("SOOKA PREMIUM", d.key));
+
+  return devices.map(d => ({
+    ...d,
+    on: deviceRows
+      ? isStockOn("SOOKA PREMIUM", d.key)
+      : isStockOn("SOOKA PREMIUM", "ALL")
+  }));
 }
 
 function isAvailable(product, section = "ALL") {
-  const p = findProduct(product);
+  if (normalize(product) === "SOOKA PREMIUM") {
+    if (normalize(section) !== "ALL") return isStockOn("SOOKA PREMIUM", section);
+    return sookaStates().some(x => x.on);
+  }
 
-  // Sama macam Customer Website 1: kalau product ada sub-section,
-  // card product = available kalau salah satu section ON.
-  // Button pakej pula ikut section masing-masing.
-  if (p?.sections && normalize(section) === "ALL") {
-    return p.sections.some(s => isStockOn(product, s.title));
+  if (normalize(product) === "YOUTUBE PREMIUM" && normalize(section) === "ALL") {
+    return isStockOn(product, "Email Sendiri") || isStockOn(product, "Email Seller");
   }
 
   return isStockOn(product, section);
@@ -1047,9 +1070,9 @@ function badgeClass(c) {
 /****************************************************
  * API / BASIC HELPERS
  ****************************************************/
-function jsonp(params) {
+function jsonp(params, apiUrlOverride) {
   return new Promise((resolve, reject) => {
-    const apiUrl = CONFIG.API_URL || "";
+    const apiUrl = apiUrlOverride || CONFIG.API_URL || "";
     if (!apiUrl) return reject(new Error("API URL not set"));
 
     const cb = "numoDirect_" + Date.now() + "_" + Math.floor(Math.random() * 100000);

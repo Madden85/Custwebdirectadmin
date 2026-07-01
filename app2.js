@@ -1,4 +1,11 @@
 window.NUMO_DIRECT_CONFIG = {
+  // Stock/promo display ikut Customer Website 1 endpoint.
+  CONTROL_API_URL: "https://script.google.com/macros/s/AKfycbwqqBJ1A9tqYhPhEJe37Ik3-HGKZOHUUHqdf_jtLJuTv8tqQpt6WqX5jUBQwKPMbM92tw/exec",
+
+  // Payment/ToyyibPay ikut backend payment endpoint.
+  PAYMENT_API_URL: "https://script.google.com/macros/s/AKfycbxVm79WzB0PnyDcFPM9hWl4Lj1smvQJe2EaoeGzNAExzp8PTbHwdfxmJ-Uqbml2RGlF/exec",
+
+  // Fallback untuk success.html dan compatibility.
   API_URL: "https://script.google.com/macros/s/AKfycbxVm79WzB0PnyDcFPM9hWl4Lj1smvQJe2EaoeGzNAExzp8PTbHwdfxmJ-Uqbml2RGlF/exec",
   ADMIN_TELEGRAM_USERNAME: "ownernumoventures",
   LOGO_IMAGE: "numologo.png",
@@ -9,7 +16,7 @@ window.NUMO_DIRECT_CONFIG = {
     navTagline: "Anda puashati, kami happy",
     heroBadge: "Fast Response • Satisfied Guaranteed",
     heroTitle: "Akaun Streaming Premium",
-    heroText: "Pilih platform streaming kegemaran anda, semak pakej dan teruskan pembayaran",
+    heroText: "Pilih platform streaming kegemaran anda, semak pakej dan bayar terus melalui ToyyibPay.",
     heroPrimary: "Lihat Pakej",
     heroSecondary: "Pakej Bundle",
     hotEyebrow: "Hot Selling",
