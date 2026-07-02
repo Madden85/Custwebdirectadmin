@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Payment Status | EizLiya Stream Hub</title>
+  <title id="successTitleTag">Payment Status</title>
   <style>
     :root{--black:#050505;--red:#e50914;--white:#fff;--muted:#666;--green:#16a34a;--line:rgba(0,0,0,.10)}
     *{box-sizing:border-box}
@@ -22,19 +22,19 @@
     @media(max-width:520px){.actions{grid-template-columns:1fr}.card{padding:20px;border-radius:24px}}
   </style>
 </head>
-<body>
+<body data-page="success">
   <main class="card">
     <img id="logo" class="logo" src="numologo.png" alt="Logo">
     <div id="statusPill" class="pill"><span class="loading"></span>Semak payment...</div>
-    <h1 id="title">Sila tunggu</h1>
-    <p id="desc">Sistem edang semak status payment. Jika payment berjaya, anda akan dibawa ke telegram admin</p>
+    <h1 id="title">Sila tunggu sekejap</h1>
+    <p id="desc">Kami sedang semak status payment anda.</p>
 
     <div class="summary">
-      <div class="row"><span>Order ID</span><strong id="orderId">-</strong></div>
-      <div class="row"><span>Produk</span><strong id="product">-</strong></div>
-      <div class="row"><span>Pakej</span><strong id="package">-</strong></div>
-      <div class="row"><span>Harga</span><strong id="amount">-</strong></div>
-      <div class="row"><span>Status</span><strong id="status">Checking...</strong></div>
+      <div class="row"><span id="successOrderLabel">Order ID</span><strong id="orderId">-</strong></div>
+      <div class="row"><span id="successProductLabel">Produk</span><strong id="product">-</strong></div>
+      <div class="row"><span id="successPackageLabel">Pakej</span><strong id="package">-</strong></div>
+      <div class="row"><span id="successAmountLabel">Harga</span><strong id="amount">-</strong></div>
+      <div class="row"><span id="successStatusLabel">Status</span><strong id="status">Checking...</strong></div>
     </div>
 
     <div id="msgBox" class="msg">Mesej Telegram akan disediakan selepas status payment disahkan.</div>
@@ -42,130 +42,12 @@
     <div class="actions">
       <a id="telegramBtn" class="btn primary disabled" href="#">PM Admin</a>
       <button id="refreshBtn" class="btn dark" type="button">Semak Semula</button>
-      <a class="btn light" href="index.html">Kembali Website</a>
+      <a id="backWebsiteBtn" class="btn light" href="index.html">Kembali Website</a>
     </div>
     <div id="smallNote" class="small">Jika Telegram tidak terbuka automatik, tekan button PM Admin.</div>
   </main>
 
-  <script src="app2.js"></script>
-  <script>
-    const CONFIG = window.NUMO_DIRECT_CONFIG || {};
-    const $ = id => document.getElementById(id);
-    const params = new URLSearchParams(window.location.search);
-    const orderId = params.get("orderId") || params.get("order_id") || "";
-    let latestTelegramUrl = "";
-    let autoOpened = false;
-    let tries = 0;
-
-    if (CONFIG.LOGO_IMAGE) $("logo").src = CONFIG.LOGO_IMAGE;
-    $("orderId").textContent = orderId || "-";
-
-    $("refreshBtn").onclick = () => checkStatus(true);
-    $("telegramBtn").onclick = e => {
-      if (!latestTelegramUrl) e.preventDefault();
-    };
-
-    function jsonp(params){
-      return new Promise((resolve,reject)=>{
-        const apiUrl = CONFIG.API_URL || "";
-        if(!apiUrl) return reject(new Error("API URL not set"));
-        const cb = "numoPayment_" + Date.now() + "_" + Math.floor(Math.random()*100000);
-        const s = document.createElement("script");
-        const timer = setTimeout(()=>{ clean(); reject(new Error("Timeout")); },20000);
-        window[cb] = data => { clean(); resolve(data || {}); };
-        function clean(){ clearTimeout(timer); delete window[cb]; s.remove(); }
-        s.onerror = () => { clean(); reject(new Error("Network error")); };
-        s.src = apiUrl + "?" + new URLSearchParams({ ...params, callback: cb });
-        document.body.appendChild(s);
-      });
-    }
-
-    async function checkStatus(manual=false){
-      if(!orderId){
-        setFailed("Order ID tidak dijumpai.");
-        return;
-      }
-      tries += 1;
-      if(manual) setChecking("Semak semula payment...");
-      try{
-        const r = await jsonp({ mode:"checkPaymentStatus", orderId, _:Date.now() });
-        if(!r.ok) throw new Error(r.error || "Order tidak dijumpai");
-        renderStatus(r.data || {});
-      }catch(e){
-        setFailed(e.message || "Tak dapat semak status payment.");
-      }
-    }
-
-    function renderStatus(data){
-      const status = String(data.status || "PENDING").toUpperCase();
-      $("orderId").textContent = data.orderId || orderId || "-";
-      $("product").textContent = data.product || "-";
-      $("package").textContent = data.package || "-";
-      $("amount").textContent = data.amount ? "RM" + data.amount : "-";
-      $("status").textContent = status;
-
-      const msg = buildMessage(data, status);
-      $("msgBox").textContent = msg;
-      latestTelegramUrl = buildTelegramUrl(msg);
-      $("telegramBtn").href = latestTelegramUrl;
-      $("telegramBtn").classList.remove("disabled");
-
-      if(status === "PAID"){
-        $("statusPill").className = "pill ok";
-        $("statusPill").textContent = "Payment berjaya ✅";
-        $("title").textContent = "Payment berjaya";
-        $("desc").textContent = "Tekan PM Admin untuk teruskan order.";
-        if(!autoOpened){
-          autoOpened = true;
-          setTimeout(()=>{ window.location.href = latestTelegramUrl; }, 1600);
-        }
-      }else if(status === "FAILED" || status === "CANCELLED"){
-        $("statusPill").className = "pill";
-        $("statusPill").textContent = "Payment tidak berjaya";
-        $("title").textContent = "Payment belum berjaya";
-        $("desc").textContent = "Payment tidak disahkan. Sila cuba semula atau PM admin jika duit telah ditolak.";
-      }else{
-        setChecking("Payment masih pending");
-        if(tries < 5) setTimeout(()=>checkStatus(false), 2500);
-      }
-    }
-
-    function setChecking(text){
-      $("statusPill").className = "pill";
-      $("statusPill").innerHTML = '<span class="loading"></span>' + text;
-      $("title").textContent = "Sila tunggu sekejap";
-      $("desc").textContent = "Kami sedang semak status payment anda.";
-    }
-
-    function setFailed(text){
-      $("statusPill").className = "pill";
-      $("statusPill").textContent = "Perlu semak manual";
-      $("title").textContent = "Status belum dapat disahkan";
-      $("desc").textContent = text;
-      $("status").textContent = "UNKNOWN";
-    }
-
-    function buildMessage(data,status){
-      return [
-        "Hi admin, saya dah buat payment.",
-        "",
-        "Order ID: " + (data.orderId || orderId || "-"),
-        "Produk: " + (data.product || "-"),
-        "Pakej: " + (data.package || "-"),
-        "Harga: " + (data.amount ? "RM" + data.amount : "-"),
-        "Status Payment: " + status,
-        data.transactionId ? "ToyyibPay Ref: " + data.transactionId : "",
-        "",
-        "Mohon proceed order saya ya."
-      ].filter(Boolean).join("\n");
-    }
-
-    function buildTelegramUrl(message){
-      const user = String(CONFIG.ADMIN_TELEGRAM_USERNAME || "ownernumoventures").replace(/^@/, "").trim();
-      return "https://t.me/" + encodeURIComponent(user) + "?text=" + encodeURIComponent(message);
-    }
-
-    checkStatus(false);
-  </script>
+  <script src="app2.js?v=8-text-config-separated"></script>
+  <script src="app.js?v=8-text-config-separated"></script>
 </body>
 </html>

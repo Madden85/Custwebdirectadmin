@@ -1,7 +1,7 @@
 /************************************************************
- * EIZLIYA STREAM HUB - TOYYIBPAY CHECKOUT V7 WEB1 STOCK + TOYYIBPAY PRICE
- * Uses Customer Website 1 endpoint for stock, ToyyibPay endpoint for prices/payment.
- * Customer pays first, then success page opens Telegram admin with paid order message.
+ * EIZLIYA STREAM HUB - TOYYIBPAY CHECKOUT V8 TEXT CONFIG SEPARATED
+ * Text/content config moved to app2.js; functions remain here.
+ * Stock follows Customer Website 1 endpoint; payment uses ToyyibPay endpoint.
  ************************************************************/
 
 let CONFIG = window.NUMO_DIRECT_CONFIG || {};
@@ -17,144 +17,28 @@ let currentTelegramUrl = "";
 let currentPaymentOrder = null;
 let paymentModalHistoryActive = false;
 
-const PRODUCTS = [
-  {
-    name: "NETFLIX PREMIUM",
-    display: "Netflix Premium",
-    image: "netflix.jpg",
-    category: "Streaming",
-    desc: "Private profile dan warranty penuh sepanjang langganan.",
-    plans: [
-      { duration: "1 Bulan", price: "RM25" },
-      { duration: "2 Bulan", price: "RM50" },
-      { duration: "3 Bulan Promo", label: "3 Bulan", price: "RM75" },
-      { duration: "6 Bulan", price: "RM150" },
-      { duration: "12 Bulan", price: "RM300" }
-    ]
-  },
-  {
-    name: "YOUTUBE PREMIUM",
-    display: "YouTube Premium",
-    image: "youtube.jpg",
-    category: "Streaming",
-    desc: "Email sendiri atau email seller.",
-    sections: [
-      {
-        title: "Email Sendiri",
-        plans: [
-          { duration: "1 Bulan", price: "RM16" },
-          { duration: "3 Bulan", price: "RM45" },
-          { duration: "6 Bulan", price: "RM85" },
-          { duration: "12 Bulan", price: "RM144" }
-        ]
-      },
-      {
-        title: "Email Seller",
-        plans: [
-          { duration: "1 Bulan", price: "RM10" },
-          { duration: "3 Bulan", price: "RM27" },
-          { duration: "6 Bulan", price: "RM48" },
-          { duration: "12 Bulan", price: "RM84" }
-        ]
-      }
-    ]
-  },
-  {
-    name: "DISNEY+ HOTSTAR",
-    display: "Disney+ Hotstar",
-    image: "disney.jpg",
-    category: "Streaming",
-    desc: "Premium entertainment dengan warranty.",
-    plans: [
-      { duration: "1 Bulan", price: "RM25" },
-      { duration: "2 Bulan", price: "RM45" },
-      { duration: "Promo 3 Bulan", label: "3 Bulan", price: "RM60" },
-      { duration: "6 Bulan", price: "RM120" },
-      { duration: "12 Bulan", price: "RM230" }
-    ]
-  },
-  {
-    name: "SOOKA PREMIUM",
-    display: "Sooka Premium",
-    image: "sooka.jpg",
-    category: "Streaming",
-    desc: "Pilih device TV, Phone atau Tablet.",
-    sections: [
-      {
-        title: "TV",
-        plans: [
-          { duration: "1 Bulan", price: "RM25" },
-          { duration: "2 Bulan", price: "RM46" },
-          { duration: "6 Bulan", price: "RM120" },
-          { duration: "12 Bulan", price: "RM216" }
-        ]
-      },
-      {
-        title: "Phone",
-        plans: [
-          { duration: "1 Bulan", price: "RM25" },
-          { duration: "2 Bulan", price: "RM46" },
-          { duration: "6 Bulan", price: "RM120" },
-          { duration: "12 Bulan", price: "RM216" }
-        ]
-      },
-      {
-        title: "Tablet",
-        plans: [
-          { duration: "1 Bulan", price: "RM25" },
-          { duration: "2 Bulan", price: "RM46" },
-          { duration: "6 Bulan", price: "RM120" },
-          { duration: "12 Bulan", price: "RM216" }
-        ]
-      }
-    ]
-  },
-  {
-    name: "VIU PREMIUM",
-    display: "Viu Premium",
-    image: "viu.jpg",
-    category: "Streaming",
-    desc: "Drama dan entertainment premium.",
-    plans: [
-      { duration: "1 Bulan", price: "RM15" },
-      { duration: "2 Bulan", price: "RM26" },
-      { duration: "6 Bulan", price: "RM66" },
-      { duration: "12 Bulan", price: "RM120" }
-    ]
-  },
-  {
-    name: "iQIYI PREMIUM",
-    display: "iQiyi Premium",
-    image: "iqiyi.jpg",
-    category: "Streaming",
-    desc: "Movie dan drama premium.",
-    plans: [
-      { duration: "1 Bulan", price: "RM15" },
-      { duration: "2 Bulan", price: "RM26" },
-      { duration: "Promo 3 Bulan", label: "3 Bulan", price: "RM33" },
-      { duration: "6 Bulan", price: "RM66" },
-      { duration: "12 Bulan", price: "RM120" }
-    ]
-  },
-  {
-    name: "SPOTIFY PREMIUM",
-    display: "Spotify Premium",
-    image: "spotify.jpg",
-    category: "Music",
-    desc: "Music tanpa iklan dan offline mode.",
-    plans: [
-      { duration: "1 Bulan", price: "RM15" },
-      { duration: "2 Bulan", price: "RM28" },
-      { duration: "Promo 2 Bulan", label: "2 Bulan Promo", price: "RM25" },
-      { duration: "6 Bulan", price: "RM72" },
-      { duration: "12 Bulan", price: "RM120" }
-    ]
+
+function loadTopConfig() {
+  if (window.NUMO_ADMIN_CONFIG) {
+    CONFIG.ADMIN_TELEGRAM_USERNAME = window.NUMO_ADMIN_CONFIG.ADMIN_TELEGRAM_USERNAME || CONFIG.ADMIN_TELEGRAM_USERNAME;
   }
-];
+  if (window.NUMO_DIRECT_CONFIG) CONFIG = { ...CONFIG, ...window.NUMO_DIRECT_CONFIG };
+  if (window.NUMO_BUTTON_TEXT) TXT = { ...TXT, ...window.NUMO_BUTTON_TEXT };
+}
+
+const PRODUCTS = window.NUMO_PRODUCTS || [];
+
 
 const $ = id => document.getElementById(id);
 
 window.addEventListener("load", () => {
+  loadTopConfig();
+
+  if (document.body && document.body.dataset.page === "success") {
+    initSuccessPage();
+    return;
+  }
+
   const frame = $("configFrame");
   if (frame) {
     frame.addEventListener("load", initPage);
@@ -185,9 +69,11 @@ function initPage() {
 }
 
 function loadFrameConfig() {
+  loadTopConfig();
   const frame = $("configFrame");
   try {
     const fwin = frame && frame.contentWindow;
+    if (fwin && fwin.NUMO_ADMIN_CONFIG) CONFIG.ADMIN_TELEGRAM_USERNAME = fwin.NUMO_ADMIN_CONFIG.ADMIN_TELEGRAM_USERNAME || CONFIG.ADMIN_TELEGRAM_USERNAME;
     if (fwin && fwin.NUMO_DIRECT_CONFIG) CONFIG = { ...CONFIG, ...fwin.NUMO_DIRECT_CONFIG };
     if (fwin && fwin.NUMO_BUTTON_TEXT) TXT = { ...TXT, ...fwin.NUMO_BUTTON_TEXT };
   } catch (e) {
@@ -224,11 +110,24 @@ function applyConfigText() {
   setText("faqTitle", text.faqTitle);
   setText("faqDesc", text.faqDesc);
   setText("footerText", text.footerText);
+  setText("stickyText", text.stickyText);
+  setText("stickyButton", text.stickyButton || text.heroPrimary);
+  setText("navPackage", text.navPackage);
+  setText("navBundle", text.navBundle);
+  setText("navFaq", text.navFaq);
+  setText("navAdmin", text.navAdmin);
+  setText("floatingSmall", text.floatingSmall);
+  setText("floatingStrong", text.floatingStrong);
+  setText("floatingStatus", text.floatingStatus);
   setText("modalTitle", text.modalTitle);
   setText("modalIntro", text.modalIntro);
   setText("copyMessage", text.copyButton || TXT.copyButton);
   setText("openTelegram", text.telegramButton || TXT.telegramButton);
   setText("newOrder", text.closeButton || TXT.closeButton);
+  setText("modalProductLabel", text.modalProductLabel);
+  setText("modalPlanLabel", text.modalPlanLabel);
+  setText("modalPriceLabel", text.modalPriceLabel);
+  setText("modalLeadLabel", text.modalLeadLabel);
 
   ["navLogo", "heroLogo", "modalLogo"].forEach(id => {
     if ($(id)) $(id).src = logo;
@@ -309,7 +208,7 @@ async function loadControl() {
       loaded: true
     };
 
-    setSync((TXT.liveStockPromo || "• Live stock & Promo", "live");
+    setSync(TXT.stockVersionLabel || TXT.liveStockPromo || "", "live");
   } catch (e) {
     control.loaded = false;
     setSync(TXT.offlinePriceMode || "Tidak dapat sync. Guna harga default.", "warn");
@@ -321,6 +220,11 @@ async function loadControl() {
 
 function setSync(text, mode) {
   if (!$("syncStatus")) return;
+  if (CONFIG.SHOW_SYNC_STATUS === false) {
+    $("syncStatus").style.display = "none";
+    return;
+  }
+  $("syncStatus").style.display = "";
   $("syncStatus").textContent = text;
   $("syncStatus").className = mode === "live" ? "sync live" : "sync";
 }
@@ -380,7 +284,7 @@ function renderProductCard(p) {
       <div class="product-body">
         <div class="p-name">${safe(p.display)}</div>
         <div class="p-desc">${safe(p.desc)}</div>
-        <div class="from"><span>Harga dari</span><strong>${safe(lowestPrice(p))}</strong></div>
+        <div class="from"><span>${safe(TXT.fromPriceLabel || "Harga dari")}</span><strong>${safe(lowestPrice(p))}</strong></div>
         <button class="view" type="button" data-toggle>${safe(TXT.viewPackages || "Lihat Pakej")}</button>
       </div>
       <div class="plans">
@@ -484,9 +388,9 @@ function renderHotSelling() {
   $("hotGrid").innerHTML = `
     <div class="hot-stage"><div id="hotTrack" class="hot-track">${slides}</div></div>
     <div class="hot-controls">
-      <button id="hotPrev" class="arrow" type="button" aria-label="Sebelumnya">‹</button>
+      <button id="hotPrev" class="arrow" type="button" aria-label="${attr(TXT.prevSlideLabel || "Sebelumnya")}">‹</button>
       <div id="hotDots" class="dots">${dots}</div>
-      <button id="hotNext" class="arrow" type="button" aria-label="Seterusnya">›</button>
+      <button id="hotNext" class="arrow" type="button" aria-label="${attr(TXT.nextSlideLabel || "Seterusnya")}">›</button>
     </div>
   `;
 
@@ -504,11 +408,11 @@ function renderBundles() {
   const bundles = CONFIG.BUNDLES || [];
   $("bundleGrid").innerHTML = bundles.map(b => `
     <article class="bundle">
-      <span class="bundle-tag">${safe(b.tag || "BUNDLE")}</span>
-      <h3>${safe(b.title || "Bundle")}</h3>
+      <span class="bundle-tag">${safe(b.tag || TXT.bundleDefaultTag || "BUNDLE")}</span>
+      <h3>${safe(b.title || TXT.bundleDefaultTitle || "Bundle")}</h3>
       <p>${safe(b.text || "")}</p>
-      <span class="price">${safe(b.price || "Tanya Admin")}</span>
-      <button class="btn primary" type="button" data-bundle-title="${attr(b.title || "Bundle")}">PM Admin</button>
+      <span class="price">${safe(b.price || TXT.askAdminPrice || "Tanya Admin")}</span>
+      <button class="btn primary" type="button" data-bundle-title="${attr(b.title || TXT.bundleDefaultTitle || "Bundle")}">${safe(TXT.pmAdminButton || "PM Admin")}</button>
     </article>
   `).join("");
 
@@ -630,37 +534,39 @@ function ensurePaymentModal() {
   `;
   document.head.appendChild(style);
 
+  const pm = CONFIG.PAYMENT_MODAL || {};
+  const payRows = CONFIG.PAYMENT_SUMMARY_LABELS || {};
   const html = `
     <div id="paymentModal" class="modal" aria-hidden="true">
       <div class="modal-card">
-        <button id="closePaymentModal" class="x" type="button" aria-label="Tutup">×</button>
-        <img id="payLogo" class="modal-logo" src="${attr(CONFIG.LOGO_IMAGE || "numologo.png")}" alt="Logo">
-        <h3>Lengkapkan detail</h3>
-        <p>Isi detail dibawah</p>
+        <button id="closePaymentModal" class="x" type="button" aria-label="${attr(pm.closeAria || TXT.closeButton || "Tutup")}">×</button>
+        <img id="payLogo" class="modal-logo" src="${attr(CONFIG.LOGO_IMAGE || "numologo.png")}" alt="${attr(pm.logoAlt || getBrandName())}">
+        <h3>${safe(pm.title || TXT.buyNow || "Bayar Sekarang")}</h3>
+        <p>${safe(pm.intro || "")}</p>
 
         <div class="order-summary">
-          <div class="row"><span>Produk</span><strong id="payProduct">-</strong></div>
-          <div class="row"><span>Pakej</span><strong id="payPlan">-</strong></div>
-          <div class="row"><span>Harga</span><strong id="payPrice">-</strong></div>
+          <div class="row"><span>${safe(payRows.product || "Produk")}</span><strong id="payProduct">-</strong></div>
+          <div class="row"><span>${safe(payRows.package || "Pakej")}</span><strong id="payPlan">-</strong></div>
+          <div class="row"><span>${safe(payRows.amount || "Harga")}</span><strong id="payPrice">-</strong></div>
         </div>
 
         <form id="paymentForm">
           <div class="payment-fields">
-            <label>Nama
-              <input id="payName" name="name" type="text" placeholder="Nama anda" autocomplete="name" required>
+            <label>${safe(pm.nameLabel || "Nama")}
+              <input id="payName" name="name" type="text" placeholder="${attr(pm.namePlaceholder || "Nama anda")}" autocomplete="name" required>
             </label>
-            <label>No. telefon
-              <input id="payPhone" name="phone" type="tel" placeholder="Contoh: 0123456789" autocomplete="tel" required>
+            <label>${safe(pm.phoneLabel || "No. telefon")}
+              <input id="payPhone" name="phone" type="tel" placeholder="${attr(pm.phonePlaceholder || "Contoh: 0123456789")}" autocomplete="tel" required>
             </label>
-            <label>Email <span style="font-weight:700;color:#777">(optional)</span>
-              <input id="payEmail" name="email" type="email" placeholder="email@example.com" autocomplete="email">
+            <label>${safe(pm.emailLabel || "Email")} <span style="font-weight:700;color:#777">${safe(pm.emailOptionalText || "(optional)")}</span>
+              <input id="payEmail" name="email" type="email" placeholder="${attr(pm.emailPlaceholder || "email@example.com")}" autocomplete="email">
             </label>
           </div>
           <div id="payError" class="pay-error"></div>
-          <div class="payment-note">Sila pastikan produk,Pakej dan Harga adalah betul</div>
+          <div class="payment-note">${safe(pm.note || "")}</div>
           <div class="modal-actions">
-            <button id="submitPayment" class="btn primary" type="submit">Terus ke ToyyibPay</button>
-            <button id="cancelPayment" class="btn danger" type="button">Tutup</button>
+            <button id="submitPayment" class="btn primary" type="submit">${safe(pm.submitButton || "Terus ke ToyyibPay")}</button>
+            <button id="cancelPayment" class="btn danger" type="button">${safe(pm.cancelButton || TXT.closeButton || "Tutup")}</button>
           </div>
         </form>
       </div>
@@ -722,7 +628,7 @@ async function submitPaymentForm(e) {
   const email = ($("payEmail")?.value || "").trim();
 
   if (!customerName || !phone) {
-    if (err) err.textContent = "Sila isi nama dan no. telefon.";
+    if (err) err.textContent = CONFIG.PAYMENT_MODAL?.requiredError || "Sila isi nama dan no. telefon.";
     return;
   }
 
@@ -737,15 +643,15 @@ async function submitPaymentForm(e) {
     }
 
     const bill = await createPaymentBill(order, { customerName, phone, email });
-    if (!bill.paymentUrl) throw new Error("Payment URL tidak dijumpai.");
+    if (!bill.paymentUrl) throw new Error(CONFIG.PAYMENT_MODAL?.paymentUrlMissing || "Payment URL tidak dijumpai.");
     window.location.href = bill.paymentUrl;
   } catch (ex) {
-    if (err) err.textContent = ex.message || "Payment gagal dibuat. Sila cuba lagi.";
-    toast(ex.message || "Payment gagal dibuat");
+    if (err) err.textContent = ex.message || CONFIG.PAYMENT_MODAL?.paymentCreateFail || "Payment gagal dibuat. Sila cuba lagi.";
+    toast(ex.message || CONFIG.PAYMENT_MODAL?.paymentCreateFailShort || "Payment gagal dibuat");
   } finally {
     if (submit) {
       submit.disabled = false;
-      submit.textContent = old || "Terus ke ToyyibPay";
+      submit.textContent = old || CONFIG.PAYMENT_MODAL?.submitButton || "Terus ke ToyyibPay";
     }
   }
 }
@@ -878,21 +784,22 @@ function closeModal() {
 
 function buildOrderMessage(lead) {
   const brand = getBrandName();
+  const t = CONFIG.TELEGRAM_MESSAGES?.directOrder || {};
   return [
-    `Hi ${brand}, saya nak order.`,
+    (t.greeting || "Hi {brand}, saya nak order.").replace("{brand}", brand),
     "",
-    `Produk: ${lead.productText}`,
-    `Pakej: ${lead.planText}`,
-    `Harga: ${lead.price}`,
-    `Lead ID: ${lead.leadId}`,
+    `${t.productLabel || "Produk"}: ${lead.productText}`,
+    `${t.packageLabel || "Pakej"}: ${lead.planText}`,
+    `${t.amountLabel || "Harga"}: ${lead.price}`,
+    `${t.leadLabel || "Lead ID"}: ${lead.leadId}`,
     "",
-    "Mohon confirm stock dan cara payment."
+    t.closing || "Mohon confirm stock dan cara payment."
   ].join("\n");
 }
 
 function buildTelegramUrl(message) {
   const user = getAdminUsername();
-  const encoded = encodeURIComponent(message || "Hi Numo, saya nak order.");
+  const encoded = encodeURIComponent(message || CONFIG.TELEGRAM_MESSAGES?.defaultMessage || "Hi Numo, saya nak order.");
   return `https://t.me/${encodeURIComponent(user)}?text=${encoded}`;
 }
 
@@ -927,6 +834,138 @@ function toast(text) {
   $("toast").textContent = text;
   $("toast").classList.add("show");
   setTimeout(() => $("toast")?.classList.remove("show"), 1800);
+}
+
+
+/****************************************************
+ * SUCCESS PAGE / TOYYIBPAY RETURN
+ ****************************************************/
+function initSuccessPage() {
+  loadTopConfig();
+  const sText = CONFIG.SUCCESS_PAGE || {};
+  const logo = $("logo");
+  if (logo && CONFIG.LOGO_IMAGE) logo.src = CONFIG.LOGO_IMAGE;
+  document.title = sText.pageTitle || "Payment Status";
+
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get("orderId") || params.get("order_id") || "";
+  window.__numoSuccess = { orderId, latestTelegramUrl: "", autoOpened: false, tries: 0 };
+
+  setText("orderId", orderId || "-");
+  if ($("refreshBtn")) $("refreshBtn").onclick = () => checkSuccessStatus(true);
+  if ($("telegramBtn")) $("telegramBtn").onclick = e => {
+    if (!window.__numoSuccess.latestTelegramUrl) e.preventDefault();
+  };
+  checkSuccessStatus(false);
+}
+
+async function checkSuccessStatus(manual = false) {
+  const state = window.__numoSuccess || {};
+  const sText = CONFIG.SUCCESS_PAGE || {};
+  if (!state.orderId) {
+    setSuccessFailed(sText.noOrderError || "Order ID tidak dijumpai.");
+    return;
+  }
+  state.tries = (state.tries || 0) + 1;
+  if (manual) setSuccessChecking(sText.recheckText || "Semak semula payment...");
+  try {
+    const apiUrl = getPaymentApiUrl();
+    const r = await jsonp({ mode: "checkPaymentStatus", orderId: state.orderId, _: Date.now() }, apiUrl);
+    if (!r.ok) throw new Error(r.error || sText.orderNotFound || "Order tidak dijumpai");
+    renderSuccessStatus(r.data || {});
+  } catch (e) {
+    setSuccessFailed(e.message || sText.checkError || "Tak dapat semak status payment.");
+  }
+}
+
+function renderSuccessStatus(data) {
+  const state = window.__numoSuccess || {};
+  const sText = CONFIG.SUCCESS_PAGE || {};
+  const labels = CONFIG.SUCCESS_SUMMARY_LABELS || {};
+  const status = String(data.status || "PENDING").toUpperCase();
+
+  setText("successOrderLabel", labels.orderId || "Order ID");
+  setText("successProductLabel", labels.product || "Produk");
+  setText("successPackageLabel", labels.package || "Pakej");
+  setText("successAmountLabel", labels.amount || "Harga");
+  setText("successStatusLabel", labels.status || "Status");
+
+  setText("orderId", data.orderId || state.orderId || "-");
+  setText("product", data.product || "-");
+  setText("package", data.package || "-");
+  setText("amount", data.amount ? "RM" + data.amount : "-");
+  setText("status", status);
+
+  const msg = buildPaidTelegramMessage(data, status);
+  setText("msgBox", msg);
+  state.latestTelegramUrl = buildTelegramUrl(msg);
+  if ($("telegramBtn")) {
+    $("telegramBtn").href = state.latestTelegramUrl;
+    $("telegramBtn").classList.remove("disabled");
+    setText("telegramBtn", sText.telegramButton || "PM Admin");
+  }
+  setText("refreshBtn", sText.refreshButton || "Semak Semula");
+  setText("backWebsiteBtn", sText.backButton || "Kembali Website");
+  setText("smallNote", sText.smallNote || "");
+
+  if (status === "PAID") {
+    $("statusPill").className = "pill ok";
+    setText("statusPill", sText.paidPill || "Payment berjaya ✅");
+    setText("title", sText.paidTitle || "Payment berjaya");
+    setText("desc", sText.paidDesc || "");
+    if (!state.autoOpened && sText.autoOpenTelegram !== false) {
+      state.autoOpened = true;
+      setTimeout(() => { window.location.href = state.latestTelegramUrl; }, Number(sText.autoOpenDelayMs || 1600));
+    }
+  } else if (status === "FAILED" || status === "CANCELLED") {
+    $("statusPill").className = "pill";
+    setText("statusPill", sText.failedPill || "Payment tidak berjaya");
+    setText("title", sText.failedTitle || "Payment belum berjaya");
+    setText("desc", sText.failedDesc || "");
+  } else {
+    setSuccessChecking(sText.pendingPill || "Payment masih pending");
+    if ((state.tries || 0) < Number(sText.maxAutoCheck || 5)) {
+      setTimeout(() => checkSuccessStatus(false), Number(sText.autoCheckDelayMs || 2500));
+    }
+  }
+}
+
+function setSuccessChecking(text) {
+  const sText = CONFIG.SUCCESS_PAGE || {};
+  if ($("statusPill")) {
+    $("statusPill").className = "pill";
+    $("statusPill").innerHTML = '<span class="loading"></span>' + safe(text || sText.checkingPill || "Semak payment...");
+  }
+  setText("title", sText.checkingTitle || "Sila tunggu sekejap");
+  setText("desc", sText.checkingDesc || "Kami sedang semak status payment anda.");
+}
+
+function setSuccessFailed(text) {
+  const sText = CONFIG.SUCCESS_PAGE || {};
+  if ($("statusPill")) {
+    $("statusPill").className = "pill";
+    setText("statusPill", sText.manualPill || "Perlu semak manual");
+  }
+  setText("title", sText.manualTitle || "Status belum dapat disahkan");
+  setText("desc", text);
+  setText("status", "UNKNOWN");
+}
+
+function buildPaidTelegramMessage(data, status) {
+  const t = CONFIG.TELEGRAM_MESSAGES?.paidOrder || {};
+  const lines = [
+    t.greeting || "Hi admin, saya dah buat payment.",
+    "",
+    `${t.orderLabel || "Order ID"}: ${data.orderId || window.__numoSuccess?.orderId || "-"}`,
+    `${t.productLabel || "Produk"}: ${data.product || "-"}`,
+    `${t.packageLabel || "Pakej"}: ${data.package || "-"}`,
+    `${t.amountLabel || "Harga"}: ${data.amount ? "RM" + data.amount : "-"}`,
+    `${t.statusLabel || "Status Payment"}: ${status}`,
+    data.transactionId ? `${t.refLabel || "ToyyibPay Ref"}: ${data.transactionId}` : "",
+    "",
+    t.closing || "Mohon proceed order saya ya."
+  ];
+  return lines.filter(Boolean).join("\n");
 }
 
 /****************************************************
@@ -1106,7 +1145,7 @@ function getBrandName() {
   return String(CONFIG.TEXT?.navBrand || "Numo").trim();
 }
 function getAdminUsername() {
-  return String(CONFIG.ADMIN_TELEGRAM_USERNAME || "ownernumoventures").replace(/^@/, "").trim();
+  return String(window.NUMO_ADMIN_CONFIG?.ADMIN_TELEGRAM_USERNAME || CONFIG.ADMIN_TELEGRAM_USERNAME || "ownernumoventures").replace(/^@/, "").trim();
 }
 function getAdminUrl() {
   return "https://t.me/" + encodeURIComponent(getAdminUsername());

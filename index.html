@@ -203,10 +203,10 @@
         </div>
       </a>
       <div class="nav-links">
-        <a href="#produk">Pakej</a>
-        <a href="#bundle">Bundle</a>
-        <a href="#faq">FAQ</a>
-        <a id="navTelegram" class="btn primary" href="https://t.me/ownernumoventures" target="_blank" rel="noopener">PM Admin</a>
+        <a id="navPackage" href="#produk">Pakej</a>
+        <a id="navBundle" href="#bundle">Bundle</a>
+        <a id="navFaq" href="#faq">FAQ</a>
+        <a id="navTelegram" class="btn primary" href="https://t.me/ownernumoventures" target="_blank" rel="noopener"><span id="navAdmin">PM Admin</span></a>
       </div>
     </div>
   </nav>
@@ -216,9 +216,9 @@
       <div>
         <div id="heroBadge" class="kicker">Fast Response • Satisfied Guaranteed</div>
         <h1 id="heroTitle">Akaun <span class="grad">Streaming Premium</span></h1>
-        <p id="heroText">Pilih platform streaming kegemaran anda, semak pakej dan teruskan pembayaran</p>
+        <p id="heroText">Pilih platform streaming kegemaran anda, semak pakej dan terus PM.</p>
         <div class="hero-actions">
-          <a id="heroPrimary" class="btn primary" href="#produk">Semua Pakej</a>
+          <a id="heroPrimary" class="btn primary" href="#produk">Lihat Pakej</a>
           <a id="heroSecondary" class="btn secondary" href="#bundle">Pakej Bundle</a>
         </div>
       </div>
@@ -228,10 +228,10 @@
         </div>
         <div class="floating-note">
           <div>
-            <span>WAKTU BEROPERASI</span>
-            <strong>7am - 12am</strong>
+            <span id="floatingSmall">Order channel</span>
+            <strong id="floatingStrong">Direct PM Admin</strong>
           </div>
-          <div class="status-dot">Online</div>
+          <div id="floatingStatus" class="status-dot">Online</div>
         </div>
       </div>
     </div>
@@ -324,8 +324,8 @@
   </footer>
 
   <div class="sticky-cta">
-    <span>Nak order sekarang?</span>
-    <a class="btn primary" href="#produk">Lihat Pakej</a>
+    <span id="stickyText">Nak order sekarang?</span>
+    <a id="stickyButton" class="btn primary" href="#produk">Lihat Pakej</a>
   </div>
 
   <div id="orderModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -335,10 +335,10 @@
       <h3 id="modalTitle">PM Admin Numo</h3>
       <p id="modalIntro">Mesej order sudah siap. Tekan Buka Telegram jika browser tidak buka Telegram secara automatik.</p>
       <div class="order-summary">
-        <div class="row"><span>Produk</span><strong id="modalProduct">-</strong></div>
-        <div class="row"><span>Pakej</span><strong id="modalPlan">-</strong></div>
-        <div class="row"><span>Harga</span><strong id="modalPrice">-</strong></div>
-        <div class="row"><span>Lead ID</span><strong id="modalLead">-</strong></div>
+        <div class="row"><span id="modalProductLabel">Produk</span><strong id="modalProduct">-</strong></div>
+        <div class="row"><span id="modalPlanLabel">Pakej</span><strong id="modalPlan">-</strong></div>
+        <div class="row"><span id="modalPriceLabel">Harga</span><strong id="modalPrice">-</strong></div>
+        <div class="row"><span id="modalLeadLabel">Lead ID</span><strong id="modalLead">-</strong></div>
       </div>
       <div id="modalMessage" class="msg-box"></div>
       <div class="modal-actions">
@@ -351,7 +351,7 @@
 
   <div id="toast" class="toast">Copied</div>
   <iframe id="configFrame" src="index2.html" style="display:none" title="config"></iframe>
-  <script src="app2.js?v=7-web1-stock-payment-price"></script>
-  <script src="app.js?v=7-web1-stock-payment-price"></script>
+  <script src="app2.js?v=8-text-config-separated"></script>
+  <script src="app.js?v=8-text-config-separated"></script>
 </body>
 </html>

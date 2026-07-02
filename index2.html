@@ -2,9 +2,22 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8" />
-  <title>EizLiya Direct Admin Config</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editable Text Config</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:20px;background:#fff;color:#111;line-height:1.5}
+    code{background:#f4f4f4;border-radius:6px;padding:2px 6px}
+    .box{border:1px solid #ddd;border-radius:14px;padding:16px;max-width:720px}
+  </style>
 </head>
 <body>
-<script src="app2.js"></script>
+  <div class="box">
+    <h1>Editable Text Config</h1>
+    <p>Semua tulisan utama website customer 2 ada dalam <code>app2.js</code>.</p>
+    <p>Tukar username Telegram admin dekat bahagian:</p>
+    <p><code>window.NUMO_ADMIN_CONFIG.ADMIN_TELEGRAM_USERNAME</code></p>
+    <p>File ini hanya tempat rujukan/config loader. Function website berada dalam <code>index.html</code> dan <code>app.js</code>.</p>
+  </div>
+  <script src="app2.js?v=8-text-config-separated"></script>
 </body>
 </html>
