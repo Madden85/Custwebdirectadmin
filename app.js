@@ -309,7 +309,7 @@ async function loadControl() {
       loaded: true
     };
 
-    setSync((TXT.liveStockPromo || "Live stock & promo") + " • V7 stock ikut Web 1", "live");
+    setSync((TXT.liveStockPromo || "• Live stock & Promo", "live");
   } catch (e) {
     control.loaded = false;
     setSync(TXT.offlinePriceMode || "Tidak dapat sync. Guna harga default.", "warn");
