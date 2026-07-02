@@ -9,7 +9,7 @@
 // ==========================================
 window.NUMO_ADMIN_CONFIG = {
   // Contoh: "ownernumoventures" atau "@ownernumoventures"
-  ADMIN_TELEGRAM_USERNAME: "ownernumoventures"
+  ADMIN_TELEGRAM_USERNAME: "Eizliya"
 };
 
 // ==========================================
@@ -36,7 +36,7 @@ window.NUMO_DIRECT_CONFIG = {
     onlineText: "Online",
     offlineText: "Offline",
     offlineButtonText: "Offline Sekarang",
-    offlineToast: "Maaf, website offline sekarang. Waktu operasi 7am - 12am.",
+    offlineToast: "Maaf, Sistem offline. Waktu operasi 7am - 12am.",
     scheduleText: "7am - 12am"
   },
 
@@ -53,7 +53,7 @@ window.NUMO_DIRECT_CONFIG = {
 
     heroBadge: "Fast Response • Satisfied Guaranteed",
     heroTitle: "Akaun Streaming Premium",
-    heroText: "Pilih platform streaming kegemaran anda, semak pakej dan bayar terus melalui ToyyibPay.",
+    heroText: "Pilih platform streaming kegemaran anda, semak pakej dan teruskan pembayaran.",
     heroPrimary: "Lihat Pakej",
     heroSecondary: "Pakej Bundle",
     floatingSmall: "WAKTU BEROPERASI",
@@ -96,8 +96,8 @@ window.NUMO_DIRECT_CONFIG = {
   },
 
   PAYMENT_MODAL: {
-    title: "Bayar Sekarang",
-    intro: "Isi detail ringkas dahulu. Lepas bayar, sistem akan bawa anda terus ke Telegram admin dengan mesej order siap.",
+    title: "Lengkapkan detail",
+    intro: "Isi detail dibawah",
     logoAlt: "Logo",
     closeAria: "Tutup",
     nameLabel: "Nama",
@@ -107,8 +107,8 @@ window.NUMO_DIRECT_CONFIG = {
     emailLabel: "Email",
     emailOptionalText: "(optional)",
     emailPlaceholder: "email@example.com",
-    note: "Amount payment akan ikut harga sistem. Customer tidak boleh ubah amount sendiri.",
-    submitButton: "Terus ke ToyyibPay",
+    note: "Sila pastikan Produk, Pakej dan Harga adalah betul",
+    submitButton: "Teruskan pembayaran",
     cancelButton: "Tutup",
     requiredError: "Sila isi nama dan no. telefon.",
     paymentUrlMissing: "Payment URL tidak dijumpai.",
@@ -125,11 +125,11 @@ window.NUMO_DIRECT_CONFIG = {
   SUCCESS_PAGE: {
     pageTitle: "Payment Status | EizLiya Stream Hub",
     checkingPill: "Semak payment...",
-    checkingTitle: "Sila tunggu sekejap",
-    checkingDesc: "Kami sedang semak status payment anda. Jika payment berjaya, Telegram admin akan dibuka dengan mesej order siap.",
+    checkingTitle: "Sila tunggu",
+    checkingDesc: "Kami sedang semak status payment anda.",
     paidPill: "Payment berjaya ✅",
     paidTitle: "Payment berjaya",
-    paidDesc: "Tekan PM Admin untuk teruskan order. Telegram juga akan dibuka automatik.",
+    paidDesc: "Tekan PM Admin untuk teruskan order.",
     failedPill: "Payment tidak berjaya",
     failedTitle: "Payment belum berjaya",
     failedDesc: "Payment tidak disahkan. Sila cuba semula atau PM admin jika duit telah ditolak.",
@@ -216,8 +216,8 @@ window.NUMO_BUTTON_TEXT = {
   viewPackages: "Lihat Pakej",
   closePackages: "Tutup Pakej",
   buyNow: "Bayar Sekarang",
-  offlineButtonText: "Offline Sekarang",
-  preparingOrder: "Buka payment...",
+  offlineButtonText: "Sistem Offline",
+  preparingOrder: "Sila tunggu sebentar",
   noHotSelling: "Tiada Hot Selling aktif sekarang.",
   noPriceText: "Harga belum tersedia. Sila PM admin.",
   copySuccess: "Mesej order copied",
