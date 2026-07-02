@@ -41,7 +41,7 @@ window.NUMO_DIRECT_CONFIG = {
 
     heroBadge: "Fast Response • Satisfied Guaranteed",
     heroTitle: "Akaun Streaming Premium",
-    heroText: "Pilih platform streaming kegemaran anda, semak pakej dan bayar teruskan pembayaran",
+    heroText: "Pilih platform streaming kegemaran anda, semak pakej dan teruskan pembayaran",
     heroPrimary: "Semua Pakej",
     heroSecondary: "Pakej Bundle",
     floatingSmall: "WAKTU BEROPERASI",
