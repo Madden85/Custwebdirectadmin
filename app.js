@@ -1,5 +1,5 @@
 /************************************************************
- * EIZLIYA STREAM HUB - TOYYIBPAY CHECKOUT V8 TEXT CONFIG SEPARATED
+ * EIZLIYA STREAM HUB - TOYYIBPAY CHECKOUT V9 OPERATING HOURS
  * Text/content config moved to app2.js; functions remain here.
  * Stock follows Customer Website 1 endpoint; payment uses ToyyibPay endpoint.
  ************************************************************/
@@ -16,6 +16,8 @@ let currentOrderMessage = "";
 let currentTelegramUrl = "";
 let currentPaymentOrder = null;
 let paymentModalHistoryActive = false;
+let isOperatingOnlineNow = true;
+let operatingTimer = null;
 
 
 function loadTopConfig() {
@@ -59,6 +61,7 @@ function initPage() {
 
   loadFrameConfig();
   applyConfigText();
+  initOperatingStatus();
   bindBaseEvents();
   renderCategories();
   renderBundles();
@@ -139,6 +142,93 @@ function applyConfigText() {
   const adminUrl = getAdminUrl();
   if ($("navTelegram")) $("navTelegram").href = adminUrl;
   if ($("openTelegram")) $("openTelegram").href = adminUrl;
+}
+
+
+function initOperatingStatus() {
+  updateOperatingStatus();
+  if (operatingTimer) clearInterval(operatingTimer);
+  operatingTimer = setInterval(() => {
+    const before = isOperatingOnlineNow;
+    updateOperatingStatus();
+    if (before !== isOperatingOnlineNow) {
+      renderProducts();
+      renderHotSelling();
+      updatePaymentModalOperatingState();
+    }
+  }, 30000);
+}
+
+function getOperatingConfig() {
+  return CONFIG.OPERATING_HOURS || {};
+}
+
+function getCurrentHourInTimezone(timezone) {
+  try {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone || "Asia/Kuala_Lumpur",
+      hour: "2-digit",
+      hourCycle: "h23"
+    }).formatToParts(new Date());
+    const hour = Number(parts.find(p => p.type === "hour")?.value);
+    if (Number.isFinite(hour)) return hour;
+  } catch (e) {}
+  return new Date().getHours();
+}
+
+function isWithinOperatingHours() {
+  const cfg = getOperatingConfig();
+  if (cfg.enabled === false) return true;
+
+  const start = Number.isFinite(Number(cfg.onlineStartHour)) ? Number(cfg.onlineStartHour) : 7;
+  let end = Number.isFinite(Number(cfg.onlineEndHour)) ? Number(cfg.onlineEndHour) : 24;
+  if (end === 0) end = 24;
+
+  const hour = getCurrentHourInTimezone(cfg.timezone || "Asia/Kuala_Lumpur");
+  if (start === end) return true;
+  if (start < end) return hour >= start && hour < end;
+  return hour >= start || hour < end;
+}
+
+function updateOperatingStatus() {
+  const cfg = getOperatingConfig();
+  isOperatingOnlineNow = isWithinOperatingHours();
+
+  const status = $("floatingStatus");
+  if (status) {
+    status.textContent = isOperatingOnlineNow
+      ? (cfg.onlineText || CONFIG.TEXT?.floatingStatus || "Online")
+      : (cfg.offlineText || "Offline");
+    status.classList.toggle("offline", !isOperatingOnlineNow);
+    status.classList.toggle("online", isOperatingOnlineNow);
+  }
+
+  return isOperatingOnlineNow;
+}
+
+function getOfflineButtonText() {
+  const cfg = getOperatingConfig();
+  return TXT.offlineButtonText || cfg.offlineButtonText || cfg.offlineText || "Offline";
+}
+
+function getOfflineToast() {
+  const cfg = getOperatingConfig();
+  return cfg.offlineToast || "Maaf, website offline sekarang. Waktu operasi 7am - 12am.";
+}
+
+function updatePaymentModalOperatingState() {
+  const modal = $("paymentModal");
+  const submit = $("submitPayment");
+  const err = $("payError");
+  if (!modal || !submit || !modal.classList.contains("show")) return;
+
+  if (!isOperatingOnlineNow) {
+    submit.disabled = true;
+    if (err) err.textContent = getOfflineToast();
+  } else {
+    submit.disabled = false;
+    if (err && err.textContent === getOfflineToast()) err.textContent = "";
+  }
 }
 
 function setHeroTitle(title) {
@@ -303,6 +393,7 @@ function renderPlans(product, plans, section) {
   return plans.map(plan => {
     const stockSection = section || "ALL";
     const ok = isAvailable(product.name, stockSection);
+    const operatingOnline = isOperatingOnlineNow;
     const promo = findPromo(product.name, stockSection, plan.duration);
     const on = isPromoActive(promo) && promo.promoPrice;
     const normal = promo?.normalPrice || plan.price;
@@ -310,7 +401,8 @@ function renderPlans(product, plans, section) {
     const badge = on ? `<span class="badge ${badgeClass(promo.badgeColor)}">${safe(promo.badgeText || promo.badgePreset || "PROMO")}</span>` : "";
     const note = on && promo.note ? `<div class="note">${safe(promo.note)}</div>` : "";
     const oldPrice = normal || plan.price;
-    const disabledText = getStockText(product.name, stockSection);
+    const canBuy = ok && operatingOnline;
+    const disabledText = operatingOnline ? getStockText(product.name, stockSection) : getOfflineButtonText();
 
     return `
       <div class="plan">
@@ -324,13 +416,13 @@ function renderPlans(product, plans, section) {
             <span class="mini-price">${safe(price)}</span>
             ${on && oldPrice && price !== oldPrice ? `<span class="mini-old">${safe(oldPrice)}</span>` : ""}
           </div>
-          ${ok ? `
+          ${canBuy ? `
             <button class="buy" type="button"
               data-buy-product="${attr(product.name)}"
               data-buy-section="${attr(stockSection)}"
               data-buy-duration="${attr(plan.duration)}"
               data-buy-price="${attr(price)}">${safe(TXT.buyNow || "Order Sekarang")}</button>
-          ` : `<button class="buy" type="button" disabled>${safe(disabledText)}</button>`}
+          ` : `<button class="buy ${!operatingOnline ? "disabled-operating" : ""}" type="button" disabled>${safe(disabledText)}</button>`}
         </div>
       </div>
     `;
@@ -372,11 +464,13 @@ function renderHotSelling() {
             <h3>${safe(p.display || x.product)}</h3>
             <div class="hot-plan">${safe(displayDuration(x.duration))}${section}</div>
             <div class="price-line"><span class="price">${safe(price)}</span>${old}</div>
-            <button class="btn primary" type="button"
-              data-buy-product="${attr(x.product)}"
-              data-buy-section="${attr(x.section || "ALL")}" 
-              data-buy-duration="${attr(x.duration)}"
-              data-buy-price="${attr(price)}">${safe(TXT.buyNow || "Order Sekarang")}</button>
+            ${isOperatingOnlineNow ? `
+              <button class="btn primary" type="button"
+                data-buy-product="${attr(x.product)}"
+                data-buy-section="${attr(x.section || "ALL")}" 
+                data-buy-duration="${attr(x.duration)}"
+                data-buy-price="${attr(price)}">${safe(TXT.buyNow || "Order Sekarang")}</button>
+            ` : `<button class="btn primary disabled-operating" type="button" disabled>${safe(getOfflineButtonText())}</button>`}
           </div>
         </article>
       </div>
@@ -446,9 +540,18 @@ function renderFaq() {
 
 function bindBuyButtons(root) {
   if (!root) return;
+  const operatingOnline = updateOperatingStatus();
   root.querySelectorAll("[data-buy-product]").forEach(btn => {
     const product = btn.dataset.buyProduct;
     const section = btn.dataset.buySection || "ALL";
+
+    if (!operatingOnline) {
+      btn.disabled = true;
+      btn.textContent = getOfflineButtonText();
+      btn.classList.add("disabled-operating");
+      btn.onclick = null;
+      return;
+    }
 
     // V5 ADMIN PANEL STOCK LOGIC:
     // Even if old HTML/button is still visible, button will be disabled if stock is not ON.
@@ -468,6 +571,16 @@ function bindBuyButtons(root) {
         price: btn.dataset.buyPrice
       };
 
+      if (!updateOperatingStatus()) {
+        btn.disabled = true;
+        btn.textContent = getOfflineButtonText();
+        btn.classList.add("disabled-operating");
+        toast(getOfflineToast());
+        renderProducts();
+        renderHotSelling();
+        return;
+      }
+
       if (!isAvailable(order.product, order.section)) {
         btn.disabled = true;
         btn.textContent = getStockText(order.product, order.section);
@@ -483,6 +596,20 @@ function bindBuyButtons(root) {
 }
 
 function showPaymentForm(order, button) {
+  // V9 safety: never open payment modal while website is offline.
+  if (!updateOperatingStatus()) {
+    const msg = getOfflineToast();
+    if (button) {
+      button.disabled = true;
+      button.textContent = getOfflineButtonText();
+      button.classList.add("disabled-operating");
+    }
+    toast(msg);
+    renderProducts();
+    renderHotSelling();
+    return;
+  }
+
   // V5 safety: never open payment modal if admin panel stock is not available.
   if (!isAvailable(order.product, order.section || "ALL")) {
     const msg = getStockText(order.product, order.section || "ALL");
@@ -579,6 +706,7 @@ function ensurePaymentModal() {
   $("cancelPayment").onclick = close;
   $("paymentModal").onclick = e => { if (e.target.id === "paymentModal") close(); };
   $("paymentForm").onsubmit = submitPaymentForm;
+  updatePaymentModalOperatingState();
 }
 
 function openPaymentModalHistory() {
@@ -626,6 +754,16 @@ async function submitPaymentForm(e) {
   const customerName = ($("payName")?.value || "").trim();
   const phone = ($("payPhone")?.value || "").trim();
   const email = ($("payEmail")?.value || "").trim();
+
+  if (!updateOperatingStatus()) {
+    if (err) err.textContent = getOfflineToast();
+    toast(getOfflineToast());
+    if (submit) {
+      submit.disabled = true;
+      submit.textContent = getOfflineButtonText();
+    }
+    return;
+  }
 
   if (!customerName || !phone) {
     if (err) err.textContent = CONFIG.PAYMENT_MODAL?.requiredError || "Sila isi nama dan no. telefon.";

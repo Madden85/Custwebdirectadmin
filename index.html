@@ -117,6 +117,8 @@
     .floating-note strong{font-size:17px;color:#080808}
     .status-dot{display:inline-flex;align-items:center;gap:7px;color:#0f7a2a;font-size:12px;font-weight:900}
     .status-dot:before{content:"";width:8px;height:8px;border-radius:50%;background:#16a34a;box-shadow:0 0 14px rgba(22,163,74,.6)}
+    .status-dot.offline{color:#dc2626}
+    .status-dot.offline:before{background:#e50914;box-shadow:0 0 14px rgba(229,9,20,.65)}
 
     .section{padding:40px 0}
     .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:22px;margin-bottom:20px}
@@ -175,6 +177,7 @@
     .plan-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px}.mini-price{font-size:20px;font-weight:950;color:#080808;white-space:nowrap}.mini-old{text-decoration:line-through;color:#888;font-size:12px;margin-left:4px}
     .buy{border:0;background:var(--red);color:#fff;border-radius:999px;padding:10px 13px;font-weight:950;cursor:pointer;white-space:nowrap;font-size:12px;box-shadow:0 10px 24px rgba(229,9,20,.22)}
     .buy:disabled{background:#d7d7d7;color:#7a7a7a;box-shadow:none;cursor:not-allowed}
+    .buy.disabled-operating,.btn.disabled-operating{opacity:.55;cursor:not-allowed;box-shadow:none}
 
     .bundle-grid,.trust-grid,.faq-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
     .bundle,.trust,.faq{background:#fff;color:#080808;border:1px solid rgba(255,255,255,.10);border-radius:26px;padding:18px;box-shadow:0 16px 42px rgba(0,0,0,.22)}
@@ -351,7 +354,7 @@
 
   <div id="toast" class="toast">Copied</div>
   <iframe id="configFrame" src="index2.html" style="display:none" title="config"></iframe>
-  <script src="app2.js?v=8-text-config-separated"></script>
+  <script src="app2.js?v=9-operating-hours"></script>
   <script src="app.js?v=8-text-config-separated"></script>
 </body>
 </html>
