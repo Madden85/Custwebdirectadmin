@@ -9,7 +9,7 @@
 // ==========================================
 window.NUMO_ADMIN_CONFIG = {
   // Contoh: "ownernumoventures" atau "@ownernumoventures"
-  ADMIN_TELEGRAM_USERNAME: "ownernumoventures"
+  ADMIN_TELEGRAM_USERNAME: "Eizliya"
 };
 
 // ==========================================
